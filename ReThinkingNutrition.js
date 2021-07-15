@@ -10,7 +10,7 @@ app.use(express.static('views/images'));
 app.use(express.static('public'));
 
 //Set up view engine
-app.engine('handlebars', exphbs());
+app.engine('handlebars', handlebars);
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', 42069);
