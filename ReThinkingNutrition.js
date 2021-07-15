@@ -1,6 +1,8 @@
 //Load Modules
 var express = require('express');
-var exphbs  = require('express-handlebars');
+
+var app = express();
+var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 //Create express instance
 var app = express();
@@ -9,7 +11,7 @@ var app = express();
 app.use(express.static('views/images'));
 app.use(express.static('public'));
 
-app.engine('handlebars', exphbs());
+app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 
 //Serve webpages
