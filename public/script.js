@@ -17,3 +17,16 @@ if (condDropDown) {
   option.text = "Pulled";
   condDropDown.add(option);
 }
+
+//Hide or show actions
+function hideMenu(link_element){
+  let divs = link_element.getElementsByTagName("DIV");
+  let style = window.getComputedStyle(divs[1]);
+  let display = style.getPropertyValue('display');
+  if ( display == 'none' ) {
+    divs[1].style.display = 'inherit';
+  }
+  else {
+    divs[1].style.display = 'none';
+  }
+}
