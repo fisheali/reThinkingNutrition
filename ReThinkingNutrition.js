@@ -1,12 +1,12 @@
-//Load Modules
 var express = require('express');
 
 var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
-//Serves images and CSS
-app.use(express.static('views/images'));
-app.use(express.static('public'));
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
