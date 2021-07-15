@@ -1,0 +1,22 @@
+<a href="/">
+<span id="menu_span">
+<p id='menu_logo'><img src='../images/logo.webp'></p>
+</span>
+</a>
+
+<h1 id="page_title">{{title}}</h1>
+
+<ul class="questions">
+  {{#each actions}}
+
+  <li>
+
+  {{#each action}}
+  <div class="form_question">{{question}}</div><br>
+  <div class="form_action">{{{input}}}</div><br>
+  {{/each}}
+
+</li>
+
+  {{/each}}
+</ul>
