@@ -1,13 +1,17 @@
+//Load Modules
 var express = require('express');
-var path = require('path');
-var app = express();
-var handlebars = require('express-handlebars')
+var exphbs  = require('express-handlebars');
 
-app.set('views', path.join(__dirname, 'views'));
+var app = express();
+var handlebars = require('express-handlebars').create({defaultLayout:'main'});
+
+//Create express instance
+app.use(express.static('views/images'));
+app.use(express.static('public'));
+
+app.engine('handlebars', exphbs());
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-
-app.set('port', 42069);
 
 //Serve webpages
 app.get('/', function (req, res) {

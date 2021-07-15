@@ -1,0 +1,24 @@
+{
+  "name": "rethinking-nutrition",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ReThinkingNutrition.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CSToddDEV/reThinkingNutrition.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CSToddDEV/reThinkingNutrition/issues"
+  },
+  "homepage": "https://github.com/CSToddDEV/reThinkingNutrition#readme"
+}
