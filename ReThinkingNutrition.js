@@ -10,10 +10,13 @@ app.use(express.static('public'));
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+app.set('port', 42069);
 
 //Serve webpages
 app.get('/', function (req, res) {
     res.render('home');
 });
 
-app.listen(42069);
+app.listen(app.get('port'), function(){
+  console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
+});
