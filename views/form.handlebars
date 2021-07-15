@@ -9,10 +9,10 @@
 <ul class="questions">
   {{#each actions}}
 
-  <li onclick="hideMenu(this)">
+  <li>
 
   {{#each action}}
-  <div class="form_question">{{question}}</div><br>
+  <div class="form_question" onclick="hideMenu(this)">{{question}}</div><br>
   <div class="form_action">{{{input}}}</div><br>
   {{/each}}
 
