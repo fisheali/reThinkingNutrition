@@ -1,15 +1,12 @@
 var express = require('express');
-
+var path = require('path');
 var app = express();
-var handlebars = require('express-handlebars').create({defaultLayout:'main'});
+var handlebars = require('express-handlebars')
 
-var bodyParser = require('body-parser');
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
+app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+
 app.set('port', 42069);
 
 //Serve webpages
