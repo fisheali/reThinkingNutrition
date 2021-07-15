@@ -1,7 +1,7 @@
 .link_span {
   border-style: solid;
   border-radius: 25px;
-  border-color: grey;
+  border-color: lightgrey;
   padding: 25px;
 }
 
@@ -31,9 +31,8 @@ h1 {
 
 #clients_span {
   position: fixed;
-  top: -100%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: -115%;
+  left: 15%;
 }
 
 #conditions_span {
@@ -52,4 +51,20 @@ h1 {
   position: fixed;
   top: 100%;
   left: 70%;
+}
+
+.link_span {
+  text-align: center;
+  padding: 2% 15%;
+}
+
+.link_span:hover {
+  background-color: lightgrey;
+  transform: scale(1.2);
+  transition-duration: 1s;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
