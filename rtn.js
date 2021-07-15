@@ -95,7 +95,7 @@ app.get('/consultations', function (req, res) {
                       input: '<form><label for="radio_client">I would like to see the consultations for: <br></label><input type="radio" name="radio_client" id="radio_client_single" value="specific_client"><label for="radio_client_single">A specific client: </label><input type="text" id="specific_client_consultation" name="specific_client_consultation" placeholder="Last Name, First Name"><br>\
                       <input type="radio" name="radio_client" id="radio_client_all" value="all_clients"><label for="radio_client_all">All clients </label><br>\
                       in the next <select name="time_frame" id="time_frame_consultation"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select>\
-                      <input type="submit" value="Submit"><input type="submit" value="Submit"></form>'}]}
+                      <input type="submit" value="Submit"></form>'}]}
        ]}
      );
 });
