@@ -6,7 +6,6 @@ var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 //Create static file references
-app.use(express.static('views/images'));
 app.use(express.static('public'));
 
 //Set up view engine

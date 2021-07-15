@@ -1,0 +1,55 @@
+.link_span {
+  border-style: solid;
+  border-radius: 25px;
+  border-color: grey;
+  padding: 25px;
+}
+
+#title_span {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+h1 {
+  text-align: center;
+}
+
+#logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+
+#consultations_span {
+  position: fixed;
+  top: -50%;
+  left: -100%;
+}
+
+#clients_span {
+  position: fixed;
+  top: -100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#conditions_span {
+  position: fixed;
+  top: -50%;
+  left: 120%;
+}
+
+#articles_span {
+  position: fixed;
+  top: 100%;
+  left: -30%;
+}
+
+#supplements_span {
+  position: fixed;
+  top: 100%;
+  left: 70%;
+}
