@@ -110,13 +110,77 @@ app.get('/consultations', function (req, res) {
                       {question: 'I would like to make a new client recommendation',
                       input: '<form><label for="client_reccomendation">I would like to reccomend </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
                       <label for="recommendation_type">a </label><select id="recommendation_type" id="recommendation_type"><option value="supplement">Supplement</option><option value="article">Article</option><option value="supp_article">Supplement and Article</option></select><br>\
-                      <label for="reccomendation_condition">in regards too </label><select class="cond_list" name="treat_cond"></select><br><input type="submit" value="Submit"></form>'}]},
+                      <label for="reccomendation_condition">for treatment of </label><select class="cond_list" name="treat_cond"></select><br><input type="submit" value="Submit"></form>'}]}
        ]}
      );
 });
 
 app.get('/supplements', function (req, res) {
-  res.render('form');
+  res.render('form', { title: 'Supplements', actions: [
+                      {action: [
+                      {question: 'I would like to add a new supplement to reccomend',
+                      input: '<form>Add Supplement: <br><label for="type_supp">Supplement Type: </label><input type="text" id="type_supp" name="type_supp" placeholder="Supplement Type"><br>\
+                      <label for="brand_list">from the brand </label><select class="brand_list" name="add_supp_brand"></select><br>\
+                      <label for="cond_list">for treatment of </label><select class="cond_list" name="treat_cond"></select><br>\
+                      <label class="add_another" onclick="addAnother(this)">+(Add Another Condition)</label><br>\
+                      <label for="store_list">sold at </label><select class="store_list" name="add_remove_store"></select><br>\
+                      <label class="add_another_store" onclick="addAnother(this)">+(Add Another Store)</label><br>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to remove a supplement from my reccomendations',
+                      input: '<form><label for="remove_supp">I would like to remove </label><input type="text" id="type_supp" name="type_supp" placeholder="Supplement Type"><label for="remove_supp_brand"> by </label><select class="brand_list" name="add_supp_brand"></select><input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to update a supplement',
+                      input: '<form>Update Supplement <label for="update_type_supp"> Type: </label><input type="text" id="old_update_type_supp" name="type_supp" placeholder="Supplement To Update">\
+                      <label for="brand_list">From Brand: </label><select class="brand_list" name="old_update_supp_brand"></select><br><br>\
+                      <label for="update_type_supp">New Type: </label><input type="text" id="update_type_supp" name="update_type_supp" placeholder="New Supplement Type"><br>\
+                      <label for="update_brand_list">New Brand: </label><select class="brand_list" name="update_supp_brand"></select><br>\
+                      <label for="cond_list">Add new condition for treatment </label><select class="cond_list" name="treat_cond"></select><br>\
+                      <label class="add_another" onclick="addAnother(this)">+(Add Another Condition)</label><br>\
+                      <label for="cond_list">Remove condition for treatment </label><select class="remove_cond_list" name="remove_treat_cond"></select><br>\
+                      <label class="remove_another" onclick="addAnother(this)">+(Remove Another Condition)</label><br>\
+                      <label for="store_list">Add new store </label><select class="store_list" name="add_store"></select><br>\
+                      <label class="add_another_store" onclick="addAnother(this)">+(Add Another Store)</label><br>\
+                      <label for="store_list">Remove store </label><select class="remove_store_list" name="remove_store"></select><br>\
+                      <label class="remove_another_store" onclick="addAnother(this)">+(Remove Another Store)</label><br>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to add or remove a brand',
+                      input: '<form>I would like to  <select name="add_remove_brand" id="add_remove_brand"><option value="add">Add</option><option value="remove">Remove</option></select>\
+                      <label for="brand_list"> the brand </label><select class="brand_list" name="add_remove_brand"></select>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to add or remove a store',
+                      input: '<form>I would like to  <select name="add_remove_store" id="add_remove_store"><option value="add">Add</option><option value="remove">Remove</option></select>\
+                      <label for="store_list"> the store </label><select class="store_list" name="add_remove_store"></select>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to search supplements by condition',
+                      input: '<form>I would like to see supplements that treat <select class="cond_list" name="treat_cond"></select>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to search supplements by brand',
+                      input: '<form>I would like to see supplements that are made by <select class="brand_list" name="update_supp_brand"></select>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to search where supplements are sold',
+                      input: '<form>I would like to see where the <label for="find_type_supp"> type </label><input type="text" id="find_type_supp" name="find_supp" placeholder="Supplement To Find">\
+                      <label for="brand_list">from the brand </label><select class="brand_list" name="brand_list"></select><br>\
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to search what supplements a store sells',
+                      input: '<form><label for="store_list">I would like to see what supplements are sold by </label><select class="store_list" name="add_remove_store"></select>\
+                      <input type="submit" value="Submit"></form>'}]}
+       ]}
+     );
 });
 
 app.get('/articles', function (req, res) {

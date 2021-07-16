@@ -119,3 +119,16 @@ a {
   font-size: 1.5em;
   display: none;
 }
+
+.add_another, .remove_another, .add_another_store, .remove_another_store {
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: .5em;
+  color: blue;
+}
+
+.remove {
+  cursor: pointer;
+  font-size: .5em;
+  color: red;
+}
