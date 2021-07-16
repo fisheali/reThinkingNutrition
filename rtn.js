@@ -68,8 +68,8 @@ app.get('/clients', function (req, res) {
                       {question: 'I would like to get a clients records',
                       input: '<form><label for="get_record">I would like to get the client record for <input type="text" id="get_record" name="get_record" placeholder="Last Name, First Name"></label>\
                       incuding:<br> <input type="checkbox" id="get_record_consultations" name="get_record_consultations" value="consultation_history"<label for="get_record_consultations">Consultation Record</label><br>\
-                      <input type="checkbox" id="get_record_supp" name="get_record_supp" value="supplement_history"<label for="get_record_supp">Supplements Record</label><br>\
-                      <input type="checkbox" id="get_record_articles" name="get_record_articles" value="article_history"<label for="get_record_articles">Articles Record</label><br><input type="submit" value="Submit"></form>'}]},
+                      <input type="checkbox" id="get_record_supp" name="get_record_supp" value="supplement_history"><label for="get_record_supp">Supplements Record</label><br>\
+                      <input type="checkbox" id="get_record_articles" name="get_record_articles" value="article_history"><label for="get_record_articles">Articles Record</label><br><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'I would like to see my open (unpaid) invoices',
@@ -83,7 +83,7 @@ app.get('/clients', function (req, res) {
 });
 
 app.get('/consultations', function (req, res) {
-  res.render('form', { title: 'Conditions', actions: [
+  res.render('form', { title: 'Consultations', actions: [
                       {action: [
                       {question: 'I would like to add a new consultation',
                       input: '<form><label for="add_consultation">I would like to add a conslutation with </label><input type="text" id="consultation_client" name="consultation_client" placeholder="Last Name, First Name">\
@@ -95,7 +95,22 @@ app.get('/consultations', function (req, res) {
                       input: '<form><label for="radio_client">I would like to see the consultations for: <br></label><input type="radio" name="radio_client" id="radio_client_single" value="specific_client"><label for="radio_client_single">A specific client: </label><input type="text" id="specific_client_consultation" name="specific_client_consultation" placeholder="Last Name, First Name"><br>\
                       <input type="radio" name="radio_client" id="radio_client_all" value="all_clients"><label for="radio_client_all">All clients </label><br>\
                       in the next <select name="time_frame" id="time_frame_consultation"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select>\
-                      <input type="submit" value="Submit"></form>'}]}
+                      <input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to update/complete a consultation',
+                      input: '<form><label for="update_consultation">I would like to update the conslutation for </label><input type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="update_consultation_date"> on </label><input type="date" name="update_consultation_date" id="update_consultation_date">:<br>\
+                      <label for="new_consultation_date">New Date: </label><input type="date" id="new_consultation_date" name="new_consultation_date"><br>\
+                      <label for="new_cosnultation_time">New Time: </label><input type="time" id="new_consultation_time" name="new_consultation_time"><br>\
+                      <label for="complete_consultation">Completed: </label><input type="checkbox" id="complete_consultation" name="complete_consultation" value="complete_consultation"><br>\
+                      <label for="paid_consultation">Paid: </label><input type="checkbox" id="paid_consultation" name="paid_consultation" value="paid_consultation"><br>\
+                      <label for="consultaiton_notes">Notes: <textarea id="consultation_notes" name="consultation_notes" rows="5" columns="100" placeholder="Add Notes to Consultation"></textarea><br><input type="submit" value="Submit"></form>'}]},
+
+                      {action: [
+                      {question: 'I would like to make a new client recommendation',
+                      input: '<form><label for="client_reccomendation">I would like to reccomend </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
+                      <label for="recommendation_type">a </label><select id="recommendation_type" id="recommendation_type"><option value="supplement">Supplement</option><option value="article">Article</option><option value="supp_article">Supplement and Article</option></select><br>\
+                      <label for="reccomendation_condition">in regards too </label><select class="cond_list" name="treat_cond"></select><br><input type="submit" value="Submit"></form>'}]},
        ]}
      );
 });

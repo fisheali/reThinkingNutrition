@@ -26,7 +26,10 @@ function hideMenu(link_element){
   if ( display == 'none' ) {
     let select_element = divs[1].getElementsByClassName("cond_list");
     if ( select_element[0] ) {
-      fillCondList(select_element[0]);
+      let options = select_element[0].getElementsByTagName("OPTION")
+      if ( !options[0] ) {
+        fillCondList(select_element[0]);
+      }
     }
     divs[1].style.display = 'inherit';
   }
