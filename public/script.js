@@ -48,6 +48,12 @@ function hideMenu(link_element){
       let brand_options = brand_select_element[0].getElementsByTagName("OPTION")
       if ( !brand_options[0] ) {
         fillDropDownList(brand_select_element[0]);
+        if( brand_select_element[1] ) {
+          let brand_options_next = brand_select_element[1].getElementsByTagName("OPTION")
+            if ( !brand_options_next[0] ) {
+              fillDropDownList(brand_select_element[1]);
+          }
+        }
       }
     }
     //Check for Store list

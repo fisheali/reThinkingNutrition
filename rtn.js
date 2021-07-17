@@ -28,15 +28,15 @@ app.get('/conditions', function (req, res) {
                       {action: [
                         {question: 'View all conditions',
                         input: '<form><input type="submit" value="Submit"></form>'}]},
-                   
+
 
                       {action: [
                         {question: 'Update a condition',
-                        input: '<form><label for="old_cond">Update the following condition: </label><input type="text" id="old_cond" name="old_cond" placeholder="current condition name"><br>\
+                        input: '<form><label for="old_cond">Update the following condition: </label><select class="cond_list" name="old_cond"></select><br>\
                         <label for="new_cond">Updated condition </label><input type="text" id="new_cond" name="new_cond" placeholder="updated condition name"><br>\
                         <input type="submit" value="Submit"></form>'}]},
-  
-                    
+
+
 
 
                       {action: [
@@ -85,12 +85,12 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'Retrieve a client\'s invoice',
-                      input: '<form><label for="get_invoice">Invoice number: <input type="text" id="get_invoice" name="get_invoice" placeholder="Invoice #"></label><input type="submit" value="Submit"></form>'}]},
+                      input: '<form><label for="get_invoice">Client Name: <input type="text" id="get_invoice" name="get_invoice" placeholder="Last Name, First Name"></label><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                         {question: 'Remove a client',
                         input: '<form><label for="client_remove">Remove the following client: <input type="text" id="client_remove" name="client_remove" placeholder="Last Name, First Name"></label><input type="submit" value="Submit"></form>'}]}
-  
+
 
                     ]}
      );
@@ -127,14 +127,14 @@ app.get('/consultations', function (req, res) {
                         input: '<form><label for="remove_consultation">Remove a consultation for </label><input type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="remove_consultation_date"> <br>\
                         on </label><input type="date" name="update_consultation_date" id="update_consultation_date">:<br>\
                         <input type="submit" value="Submit"></form>'}]},
-                       
+
 
                       {action: [
                       {question: 'Add a new client recommendation',
                       input: '<form><label for="client_recommendation">Add Recommendation for: </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
                       <label for="recommendation_condition">for Treatment of Condition: </label><select class="cond_list" name="treat_cond"></select><br><br>\
-                      <label for="supp_rec">Add Supplement: </label><select id="supp_rec" id="supp_rec"><option value="these">These</option><option value="Will">Will</option><option value="Be">Be</option><option value="Dynamic">Dynamic</option></select><br>\
-                      <label for="art_rec">Add Article: </label><select id="art_rec" id="art_rec"><option value="these">These</option><option value="Will">Will</option><option value="Be">Be</option><option value="Dynamic">Dynamic</option></select><br>\
+                      <label for="supp_rec">Add Supplement: </label><input type="checkbox" id="supp_rec" name="supp_rec" value="supp_rec"><br>\
+                      <label for="art_rec">Add Article: </label><input type="checkbox" id="art_rec" name="art_rec" value="art_rec"><br>\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
@@ -145,9 +145,6 @@ app.get('/consultations', function (req, res) {
                       {action: [
                         {question: 'Remove an existing client recommendation',
                         input: '<form><label for="client_recommendation">Remove Recommendation for: </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
-                        <label for="remove_recommendation_condition">for Treatment of Condition: </label><select class="cond_list" name="treat_cond"></select><br><br>\
-                        <label for="remove_supp_rec">Remove Supplement: </label><select id="remove_supp_rec" id="remove_supp_rec"><option value="these">These</option><option value="Will">Will</option><option value="Be">Be</option><option value="Dynamic">Dynamic</option></select><br>\
-                        <label for="remove_art_rec">Remove Article: </label><select id="remove_art_rec" id="remove_art_rec"><option value="these">These</option><option value="Will">Will</option><option value="Be">Be</option><option value="Dynamic">Dynamic</option></select><br>\
                         <input type="submit" value="Submit"></form>'}]}
        ]}
      );
@@ -174,9 +171,8 @@ app.get('/supplements', function (req, res) {
 
                       {action: [
                       {question: 'Add or remove a brand',
-                      input: '<form><select name="add_remove_brand" id="add_remove_brand"><option value="add">Add</option><option value="remove">Remove</option></select>\
-                      <label for="brand_list"> the brand </label><select class="brand_list" name="add_remove_brand"></select>\
-                      <input type="submit" value="Submit"></form>'}]},
+                      input: '<form><label for="add_brand">Add the brand </label><input type="text" id="add_brand" name="add_brand" placeholder="Add Brand"><input type="submit" value="Submit"></form><br<br>\
+                      <form><label for="remove_brand">Remove the brand </label><select class="brand_list" name="remove_brand"></select><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Search supplements by condition',
@@ -197,8 +193,8 @@ app.get('/articles', function (req, res) {
     {action: [
       {question: 'Add an article to library',
       input: '<form><label for="title">Title: </label><input type="text" id="title" name="title" placeholder="article title"><br>\
-      <label for="art_supp_list">Article is related to condition: </label><select class="brand_list" name="add_art_cond"></select><br>\
-      <label for="art_cond_list">Article is related to supplement: </label><select class="cond_list" name="add_art_supp"></select><br>\
+      <label for="art_supp_list">Article is related to condition: </label><select class="cond_list" name="add_art_cond"></select><br>\
+      <label for="art_cond_list">Article is related to supplement: </label><input type="text" id="add_supp_type" name="add_supp_type" placeholder="Supplement Type"> from <select class="brand_list" name="add_art_supp"></select><br>\
       <label for="author">Author: </label><input type="text" id="author" name="author" placeholder="author"><br>\
       <label for="publication">Publication: </label><input type="text" id="publication" name="publication" placeholder="publication"><br>\
       <label for="publish_date">Publish Date: </label><input type="date" id="publish_date" name="publish_date" placeholder="publish date"><br>\
@@ -207,24 +203,24 @@ app.get('/articles', function (req, res) {
 
     {action: [
       {question: 'Search articles by condition',
-      input: '<form>Search articles by condition <select class="condition_list" name="search_article_by_condition"></select>\
+      input: '<form>Search articles by condition <select class="cond_list" name="old_cond"></select></select>\
       <input type="submit" value="Submit"></form>'}]},
 
     {action: [
       {question: 'Search articles by supplement',
-      input: '<form>Search articles by supplement <select class="supplement_list" name="search_article_by_supplement"></select>\
+      input: '<form><label for="art_from_supp">Search articles by supplement </label><input type="text" id="art_from_supp" name="art_from_supp" placeholder="Supplement Type"></select>\
       <input type="submit" value="Submit"></form>'}]},
 
-  
+
 
     {action: [
       {question: 'Update an article in library',
       input: '<form><label for="old_title">Title of Article to Update: </label><input type="text" id="old_title" name="old_title" placeholder="article title to update"><br><br>\
       <label for="new_title">Updated Title: </label><input type="text" id="new_title" name="new_title" placeholder="updated title"><br>\
-      <label for="add_remove_art_supp">Add or remove </label> <select name="add_remove_art_supp" id="add_remove_art_supp"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
+      <label for="add_remove_art_supp">Add/Remove </label> <select name="add_remove_art_supp" id="add_remove_art_supp"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
       relation to condition: <select class="cond_list" name="add_remove_art_cond_list"></select><br>\
-      <label for="add_remove_art_cond">Add or remove </label><select name="add_remove_art_cond" id="add_remove_art_cond"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
-      relation to supplement:<select class="supp_list" name="add_remove_art_supp_list"></select><br>\
+      <label for="add_remove_art_cond">Add/Remove </label><select name="add_remove_art_cond" id="add_remove_art_cond"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
+      relation to supplement:<input type="text" id="update_art_supp" name="update_art_supp" placeholder="Supplement Type"> from <select class="brand_list" name="update_art_supp_brand"></select><br>\
       <label for="new_author">Updated Author: </label><input type="text" id="new_author" name="new_author" placeholder="updated author"><br>\
       <label for="new_publication">Updated Publication: </label><input type="text" id="new_publication" name="new_publication" placeholder="updated publication"><br>\
       <label for="new_publish_date">Updated Publish Date: </label><input type="date" id="new_publish_date" name="new_publish_date" placeholder="updated publish date"><br>\
