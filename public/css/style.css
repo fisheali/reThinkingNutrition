@@ -132,3 +132,21 @@ a {
   font-size: .5em;
   color: red;
 }
+
+.response {
+  text-align: center;
+  font-size: 1.5em;
+  width: 100%;
+  height: 100%;
+}
+
+.response table {
+  text-align: left;
+  font-size: .75em;
+  border-style: double;
+  margin: auto;
+}
+
+.response table th {
+  border-style: double;
+}

@@ -1,0 +1,38 @@
+{ "title": "Clients", "actions": [
+
+                    {"action": [
+                    {"question": "Add new client",
+                    "input": "<form><label for='add_client_fname'>First Name: </label><input type='text' id='add_client_fname' name='add_client_fname' placeholder='First Name'><br>
+                    <label for='add_client_lname'>Last Name: </label><input type='text' id='add_client_lname' name='add_client_lname' placeholder='Last Name'><br>
+                    <label for='add_client_phone'>Phone Number: </label><input type='tel' id='add_client_phone' name='add_client_phone' pattern='[0-9]{3}-[0-9]{2}-[0-9]{3}' placeholder='xxx-xxx-xxxx'><br>
+                    <label for='add_client_email'>Email: </label><input type='email' id='add_client_email' name='add_client_email' placeholder='email@example.com'><br>
+                    <label for='add_client_street'>Street Address: </label><input type='text' id='add_client_street' name='add_client_street' placeholder='1234 Example St.'><br>
+                    <label for='add_client_city'>City: </label><input type='text' id='add_client_city' name='add_client_city' placeholder='City'><br>
+                    <input type='submit' value='Submit'></form>"}]},
+                    {"action": [
+                    {"question": "Retrieve a client's records",
+                    "input": "<form><label for='get_record'>Retrieve the records for <input type='text' id='get_record' name='get_record' placeholder='Last Name, First Name'></label>
+                    including:<br> <input type='checkbox' id='get_record_consultations' name='get_record_consultations' value='consultation_history'<label for='get_record_consultations'>Consultation Record</label><br>
+                    <input type='checkbox' id='get_record_supp' name='get_record_supp' value='supplement_history'><label for='get_record_supp'>Supplements Record</label><br>
+                    <input type='checkbox' id='get_record_articles' name='get_record_articles' value='article_history'><label for='get_record_articles'>Articles Record</label><br><input type='submit' value='Submit'></form>"}]},
+                    {"action": [
+                    {"question": "Update a client record",
+                    "input": "<form><label for='old_first_name'>First Name of Client to Update: </label><input type='text' id='old_first_name' name='old_first_name' placeholder='first name to update'><br>
+                    <label for='old_last_name'>Last Name of Client to Update: </label><input type='text' id='old_last_name' name='old_last_name' placeholder='last name to update'><br><br>
+                    <label for='update_client_fname'>Updated First Name: </label><input type='text' id='updated_client_fname' name='updated_client_fname' placeholder='updated first Nnme'><br>
+                    <label for='update_client_lname'>Updated Last Name: </label><input type='text' id='updated_client_lname' name='updated_client_lname' placeholder='updated last name'><br>
+                    <label for='update_client_phone'>Updated Phone Number: </label><input type='tel' id='updated_client_phone' name='updated_client_phone' pattern='[0-9]{3}-[0-9]{2}-[0-9]{3}' placeholder='updated xxx-xxx-xxxx'><br>
+                    <label for='update_client_email'>Updated Email: </label><input type='email' id='updated_client_email' name='updated_client_email' placeholder='updated email@example.com'><br>
+                    <label for='update_client_street'>Updated Street Address: </label><input type='text' id='updated_client_street' name='updated_client_street' placeholder='updated 1234 Example St.'><br>
+                    <label for='update_client_city'>Updated City: </label><input type='text' id='updated_client_city' name='updated_client_city' placeholder='updated city'><br>
+                    <input type='submit' value='Submit'></form>"}]},
+                    {"action": [
+                    {"question": "View open (unpaid) invoices",
+                    "input": "<form><label for='open_invoice'>View open invoices from the last: <select name='time_frame' id='time_frame'><option value='2_weeks'>2 Weeks</option><option value='1 Month'>1 Month</option><option value='all_time'>All Time</option></select><input type='submit' value='Submit'></form>"}]},
+                    {"action": [
+                    {"question": "Retrieve a client's invoice",
+                    "input": "<form><label for='get_invoice'>Client Name: <input type='text' id='get_invoice' name='get_invoice' placeholder='Last Name, First Name'></label><input type='submit' value='Submit'></form>"}]},
+                    {"action": [
+                      {"question": "Remove a client",
+                      "input": "<form><label for='client_remove'>Remove the following client: <input type='text' id='client_remove' name='client_remove' placeholder='Last Name, First Name'></label><input type='submit' value='Submit'></form>"}]}
+                  ]}

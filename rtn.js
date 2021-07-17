@@ -5,6 +5,10 @@ var express = require('express');
 var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
+//requires
+var clientMethods =require('./clientMethods.js');
+var consultationMethods =require('./consultationMethods.js');
+
 //Create static file references
 app.use(express.static('public'));
 
@@ -51,9 +55,9 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'Add new client',
-                      input: '<form><label for="add_client_fname">First Name: </label><input type="text" id="add_client_fname" name="add_client_fname" placeholder="First Name"><br>\
+                      input: '<form action="/clientAdd"><label for="add_client_fname">First Name: </label><input type="text" id="add_client_fname" name="add_client_fname" placeholder="First Name"><br>\
                       <label for="add_client_lname">Last Name: </label><input type="text" id="add_client_lname" name="add_client_lname" placeholder="Last Name"><br>\
-                      <label for="add_client_phone">Phone Number: </label><input type="tel" id="add_client_phone" name="add_client_phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="xxx-xxx-xxxx"><br>\
+                      <label for="add_client_phone">Phone Number: </label><input type="tel" id="add_client_phone" name="add_client_phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"><br>\
                       <label for="add_client_email">Email: </label><input type="email" id="add_client_email" name="add_client_email" placeholder="email@example.com"><br>\
                       <label for="add_client_street">Street Address: </label><input type="text" id="add_client_street" name="add_client_street" placeholder="1234 Example St."><br>\
                       <label for="add_client_city">City: </label><input type="text" id="add_client_city" name="add_client_city" placeholder="City"><br>\
@@ -61,14 +65,14 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'Retrieve a client\'s records',
-                      input: '<form><label for="get_record">Retrieve the records for <input type="text" id="get_record" name="get_record" placeholder="Last Name, First Name"></label>\
+                      input: '<form action="/clientRecords"><label for="get_record">Retrieve the records for <input type="text" id="get_record" name="get_record" placeholder="Last Name, First Name"></label>\
                       including:<br> <input type="checkbox" id="get_record_consultations" name="get_record_consultations" value="consultation_history"<label for="get_record_consultations">Consultation Record</label><br>\
                       <input type="checkbox" id="get_record_supp" name="get_record_supp" value="supplement_history"><label for="get_record_supp">Supplements Record</label><br>\
                       <input type="checkbox" id="get_record_articles" name="get_record_articles" value="article_history"><label for="get_record_articles">Articles Record</label><br><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Update a client record',
-                      input: '<form><label for="old_first_name">First Name of Client to Update: </label><input type="text" id="old_first_name" name="old_first_name" placeholder="first name to update"><br>\
+                      input: '<form action="/updateClientRecords"><label for="old_first_name">First Name of Client to Update: </label><input type="text" id="old_first_name" name="old_first_name" placeholder="first name to update"><br>\
                       <label for="old_last_name">Last Name of Client to Update: </label><input type="text" id="old_last_name" name="old_last_name" placeholder="last name to update"><br><br>\
                       <label for="update_client_fname">Updated First Name: </label><input type="text" id="updated_client_fname" name="updated_client_fname" placeholder="updated first Nnme"><br>\
                       <label for="update_client_lname">Updated Last Name: </label><input type="text" id="updated_client_lname" name="updated_client_lname" placeholder="updated last name"><br>\
@@ -81,15 +85,15 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'View open (unpaid) invoices',
-                      input: '<form><label for="open_invoice">View open invoices from the last: <select name="time_frame" id="time_frame"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select><input type="submit" value="Submit"></form>'}]},
+                      input: '<form action="/unpaidInvoices"><label for="open_invoice">View open invoices from the last: <select name="time_frame" id="time_frame"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Retrieve a client\'s invoice',
-                      input: '<form><label for="get_invoice">Client Name: <input type="text" id="get_invoice" name="get_invoice" placeholder="Last Name, First Name"></label><input type="submit" value="Submit"></form>'}]},
+                      input: '<form action="/clientInvoices"><label for="get_invoice">Client Name: <input type="text" id="get_invoice" name="get_invoice" placeholder="Last Name, First Name"></label><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                         {question: 'Remove a client',
-                        input: '<form><label for="client_remove">Remove the following client: <input type="text" id="client_remove" name="client_remove" placeholder="Last Name, First Name"></label><input type="submit" value="Submit"></form>'}]}
+                        input: '<form action="deleteClient"><label for="client_remove">Remove the following client: <input type="text" id="client_remove" name="client_remove" placeholder="Last Name, First Name"></label><input type="submit" value="Submit" onclick="return confirm("Are you sure you want to delete this item?");"></form>'}]}
 
 
                     ]}
@@ -100,21 +104,21 @@ app.get('/consultations', function (req, res) {
   res.render('form', { title: 'Consultations', actions: [
                       {action: [
                       {question: 'Add a new consultation',
-                      input: '<form><label for="add_consultation">Add a consultation with </label><input type="text" id="consultation_client" name="consultation_client" placeholder="Last Name, First Name"><br>\
+                      input: '<form action="/addConsultation"><label for="add_consultation">Add a consultation with </label><input type="text" id="consultation_client" name="consultation_client" placeholder="Last Name, First Name"><br>\
                       <label for="consultation_date">on </label><input type="date" id="consultation_date" name="consultation_date"><br>\
                       <label for="consultation_time">at </label><input type="time" id="consultation_time" name="consultation_time"><br>\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'View my upcoming consultations',
-                      input: '<form><label for="radio_client">View consultations for: <br><br></label><input type="radio" name="radio_client" id="radio_client_single" value="specific_client"><label for="radio_client_single">A specific client: </label><input type="text" id="specific_client_consultation" name="specific_client_consultation" placeholder="Last Name, First Name"><br>\
+                      input: '<form action="/upcomingConsultations"><label for="radio_client">View consultations for: <br><br></label><input type="radio" name="radio_client" id="radio_client_single" value="specific_client"><label for="radio_client_single">A specific client: </label><input type="text" id="specific_client_consultation" name="specific_client_consultation" placeholder="Last Name, First Name"><br>\
                       <input type="radio" name="radio_client" id="radio_client_all" value="all_clients"><label for="radio_client_all">All clients </label><br><br>\
                       in the next <select name="time_frame" id="time_frame_consultation"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select>\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Update a consultation',
-                      input: '<form><label for="update_consultation">Update a consultation for </label><input type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="update_consultation_date"> <br>\
+                      input: '<form action="/updateConsultation"><label for="update_consultation">Update a consultation for </label><input type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="update_consultation_date"> <br>\
                       on </label><input type="date" name="update_consultation_date" id="update_consultation_date">:<br><br>\
                       <label for="new_consultation_date">New Date: </label><input type="date" id="new_consultation_date" name="new_consultation_date"><br>\
                       <label for="new_cosnultation_time">New Time: </label><input type="time" id="new_consultation_time" name="new_consultation_time"><br>\
@@ -124,14 +128,14 @@ app.get('/consultations', function (req, res) {
 
                       {action: [
                         {question: 'Remove a consultation',
-                        input: '<form><label for="remove_consultation">Remove a consultation for </label><input type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="remove_consultation_date"> <br>\
+                        input: '<form action="/deleteConsultation"><label for="remove_consultation">Remove a consultation for </label><input type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="remove_consultation_date"> <br>\
                         on </label><input type="date" name="update_consultation_date" id="update_consultation_date">:<br>\
                         <input type="submit" value="Submit"></form>'}]},
 
 
                       {action: [
                       {question: 'Add a new client recommendation',
-                      input: '<form><label for="client_recommendation">Add Recommendation for: </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
+                      input: '<form action="/makeRecommendation"><label for="client_recommendation">Add Recommendation for: </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
                       <label for="recommendation_condition">for Treatment of Condition: </label><select class="cond_list" name="treat_cond"></select><br><br>\
                       <label for="supp_rec">Add Supplement: </label><input type="checkbox" id="supp_rec" name="supp_rec" value="supp_rec"><br>\
                       <label for="art_rec">Add Article: </label><input type="checkbox" id="art_rec" name="art_rec" value="art_rec"><br>\
@@ -183,7 +187,6 @@ app.get('/supplements', function (req, res) {
                       {question: 'Search supplements by brand',
                       input: '<form>Search supplements that are made by <select class="brand_list" name="update_supp_brand"></select>\
                       <input type="submit" value="Submit"></form>'}]},
-
        ]}
      );
 });
@@ -235,6 +238,133 @@ app.get('/articles', function (req, res) {
     );
   });
 
+  app.get('/clientAdd', function(req, res) {
+    success = clientMethods.addClient(req.query);
+    if (success) {
+      res.render('success', { title: "Client", values: Object.values(req.query) }) ;
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/clientRecords', function(req, res) {
+    records = clientMethods.clientRecords(req.query);
+    if (records[0]) {
+      if (records[1]) {
+        //Logice for multiple records
+      }
+      res.render('read', records[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/updateClientRecords', function(req, res) {
+    records = clientMethods.updateClientRecords(req.query);
+    if (records[0]) {
+      if (records[1]) {
+        //Logice for multiple records
+      }
+      res.render('success', {title: "Update Client Records", values: Object.values(records[2].values[0])});
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/unpaidInvoices', function(req, res) {
+    invoices = clientMethods.unpaidInvoices(req.query);
+    if (invoices[0]) {
+      res.render('read', invoices[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/clientInvoices', function(req, res) {
+    records = clientMethods.clientInvoices(req.query);
+    if (records[0]) {
+      if (records[1]) {
+        //Logice for multiple records
+      }
+      res.render('read', records[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/deleteClient', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    deleted = clientMethods.deleteClient(req.query);
+    if (deleted) {
+      res.render('success', {title : "Deleted Client", values : Object.values(deleted[2].values[0])});
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  })
+
+  app.get('/addConsultation', function(req, res) {
+    success = consultationMethods.addConsultation(req.query);
+    if (success) {
+      res.render('success', { title: "Consultation", values: Object.values(req.query) }) ;
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  })
+
+  app.get('/upcomingConsultations', function(req, res) {
+    consultations = consultationMethods.upcomingConsultations(req.query);
+    if (consultations[0]) {
+      res.render('read', consultations[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/updateConsultation', function(req, res) {
+    consultation = consultationMethods.updateConsultation(req.query);
+    if (consultation[0]) {
+      if (consultation[1]) {
+        //Logice for multiple records
+      }
+      res.render('read', consultation[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/deleteConsultation', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    deleted = consultationMethods.deleteConsultation(req.query);
+    if (deleted) {
+      res.render('read', deleted[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/makeRecommendation', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    recommendations = consultationMethods.makeRecommendation(req.query, res, app);
+    if (reccomendations) {
+      res.render('read', reccomendations[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  })
 
 app.listen(app.get('port'), function(){
   console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
