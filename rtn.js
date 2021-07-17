@@ -184,8 +184,44 @@ app.get('/supplements', function (req, res) {
 });
 
 app.get('/articles', function (req, res) {
-  res.render('form');
-});
+  res.render('form', { title: 'Articles', actions:[
+    {action: [
+      {question: 'Add an article to library',
+      input: '<form>Add library: <br><br><label for="title">Title: </label><input type="title" id="title" name="title" placeholder="article title"><br>\
+      <label for="author">Author: </label><input type="text" id="author" name="author" placeholder="author"><br>\
+      <label for="publication">Publication: </label><input type="text" id="publication" name="publication" placeholder="publication"><br>\
+      <label for="publish_date">Publish Date: </label><input type="date" id="publish_date" name="publish_date" placeholder="publish date"><br>\
+      <label for="website_link">Website link: </label><input type="url" id="website_link" name="website_link" placeholder="website link"><br>\
+      <input type="submit" value="Submit"> </form>'}]},
+
+
+      {action: [
+        {question: 'Search articles by author',
+        input: '<form>Search articles by author <select class="author" name="search_article_by_author"></select>\
+        <input type="submit" value="Submit"></form>'}]},
+
+        {action: [
+        {question: 'Search articles by condition',
+        input: '<form>Search articles by condition <select class="condition_list" name="search_article_by_condition"></select>\
+        <input type="submit" value="Submit"></form>'}]},
+
+        {action: [
+        {question: 'Search articles by supplement',
+        input: '<form>Search articles by supplement <select class="supplement_list" name="update_supp_brand"></select>\
+        <input type="submit" value="Submit"></form>'}]},
+
+        {action: [
+        {question: 'Search articles by publication',
+        input: '<form>Search articles by publication </label><select class="store_list" name="add_remove_store"></select>\
+        <input type="submit" value="Submit"></form>'}]},
+
+        {action: [
+        {question: 'Remove an article from library',
+        input: '<form> </form>'}]}
+    ]}
+    );
+  });
+
 
 app.listen(app.get('port'), function(){
   console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
