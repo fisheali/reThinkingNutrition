@@ -4,11 +4,17 @@
 </span>
 </a>
 
-<form class="" action="/chosenRecommendation">
-  {{#each reccomendations}}
-  {{#each type}}
-  <input type="checkbox" name="{{this}}" value="{{this}}"> <lable for={{this}}> {{this}} </lable>
-  {{/each}}
-  {{/each}}
-  <input type="submit" value="Submit">
-</form>
+<h1>{{title}}</h1>
+
+<div class="response">
+  <form action="/makeRecommendation">
+    {{#each articles}}
+    <input type="checkbox" name="{{this}}" value="{{this}}"> <lable for="{{this}}"> {{this}} </lable> <br>
+    {{/each}}
+    {{#each supplements}}
+    <input type="checkbox" name="{{this}}" value="{{this}}"> <lable for="{{this}}"> {{this}} </lable> <br>
+    {{/each}}
+    <input type="hidden" name="choices" value="false">
+    <input type="submit" value="Submit">
+  </form>
+</div>

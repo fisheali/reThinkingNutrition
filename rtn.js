@@ -8,6 +8,9 @@ var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 //requires
 var clientMethods =require('./clientMethods.js');
 var consultationMethods =require('./consultationMethods.js');
+var articleMethods =require('./articleMethods.js');
+var supplementMethods =require('./supplementMethods.js');
+var conditionMethods =require('./conditionMethods.js');
 
 //Create static file references
 app.use(express.static('public'));
@@ -27,25 +30,21 @@ app.get('/conditions', function (req, res) {
   res.render('form', { title: 'Conditions', actions: [
                       {action: [
                       {question: 'Add a new condition to treatment',
-                      input: '<form><label for="add_cond">Add the following condition: </label><input type="text" id="add_cond" name="add_cond" placeholder="Condition Name"><input type="submit" value="Submit"></form>'}]},
+                      input: '<form action="/addCondition"><label for="add_cond">Add the following condition: </label><input type="text" id="add_cond" name="add_cond" placeholder="Condition Name"><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                         {question: 'View all conditions',
-                        input: '<form><input type="submit" value="Submit"></form>'}]},
-
+                        input: '<form action="/getCondtions"><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                         {question: 'Update a condition',
-                        input: '<form><label for="old_cond">Update the following condition: </label><select class="cond_list" name="old_cond"></select><br>\
+                        input: '<form action="/updateCondition"><label for="old_cond">Update the following condition: </label><select class="cond_list" name="old_cond"></select><br>\
                         <label for="new_cond">Updated condition </label><input type="text" id="new_cond" name="new_cond" placeholder="updated condition name"><br>\
                         <input type="submit" value="Submit"></form>'}]},
 
-
-
-
                       {action: [
                       {question: 'Remove a condition from treatment',
-                      input: '<form><label for="remove_cond">Remove the condition </label><select class="cond_list" name="remove_cond"></select><input type="submit" value="Submit"></form>'}]}
+                      input: '<form action="removeCondition"><label for="remove_cond">Remove the condition </label><select class="cond_list" name="remove_cond"></select><input type="submit" value="Submit"></form>'}]}
        ]}
     );
 });
@@ -139,17 +138,17 @@ app.get('/consultations', function (req, res) {
                       <label for="recommendation_condition">for Treatment of Condition: </label><select class="cond_list" name="treat_cond"></select><br><br>\
                       <label for="supp_rec">Add Supplement: </label><input type="checkbox" id="supp_rec" name="supp_rec" value="supp_rec"><br>\
                       <label for="art_rec">Add Article: </label><input type="checkbox" id="art_rec" name="art_rec" value="art_rec"><br>\
-                      <input type="submit" value="Submit"></form>'}]},
+                      <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                         {question: 'View client recommendations',
-                        input: '<form><label for="view_client_recommendation">View Recommendations for: </label><input type="text" id="view_client_recommendation" name="view_client_recommendation" placeholder="Last Name, First Name"><br>\
+                        input: '<form action="/viewReccomendations"><label for="view_client_recommendation">View Recommendations for: </label><input type="text" id="view_client_recommendation" name="view_client_recommendation" placeholder="Last Name, First Name"><br>\
                         <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                         {question: 'Remove an existing client recommendation',
-                        input: '<form><label for="client_recommendation">Remove Recommendation for: </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
-                        <input type="submit" value="Submit"></form>'}]}
+                        input: '<form action="/removeReccomendations"><label for="client_recommendation">Remove Recommendation for: </label><input type="text" id="client_reccomendation" name="client_reccomendation" placeholder="Last Name, First Name"><br>\
+                        <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]}
        ]}
      );
 });
@@ -158,14 +157,14 @@ app.get('/supplements', function (req, res) {
   res.render('form', { title: 'Supplements', actions: [
                       {action: [
                       {question: 'Add a new supplement',
-                      input: '<form><label for="type_supp">Supplement Type: </label><input type="text" id="type_supp" name="type_supp" placeholder="Supplement Type"><br>\
+                      input: '<form action="/addSupplement"><label for="type_supp">Supplement Type: </label><input type="text" id="type_supp" name="type_supp" placeholder="Supplement Type"><br>\
                       <label for="brand_list">from the brand </label><select class="brand_list" name="add_supp_brand"></select><br>\
                       <label for="cond_list">for treatment of </label><select class="cond_list" name="treat_cond"></select><br>\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Update a supplement',
-                      input: '<form>Update Supplement <label for="update_type_supp"> Type: </label><input type="text" id="old_update_type_supp" name="type_supp" placeholder="Supplement To Update">\
+                      input: '<form action="/updateSupplement">Update Supplement <label for="update_type_supp"> Type: </label><input type="text" id="old_update_type_supp" name="type_supp" placeholder="Supplement To Update">\
                       <label for="brand_list">From Brand: </label><select class="brand_list" name="old_update_supp_brand"></select><br><br>\
                       <label for="update_type_supp">New Type: </label><input type="text" id="update_type_supp" name="update_type_supp" placeholder="New Supplement Type"><br>\
                       <label for="update_brand_list">New Brand: </label><select class="brand_list" name="update_supp_brand"></select><br>\
@@ -175,17 +174,17 @@ app.get('/supplements', function (req, res) {
 
                       {action: [
                       {question: 'Add or remove a brand',
-                      input: '<form><label for="add_brand">Add the brand </label><input type="text" id="add_brand" name="add_brand" placeholder="Add Brand"><input type="submit" value="Submit"></form><br<br>\
-                      <form><label for="remove_brand">Remove the brand </label><select class="brand_list" name="remove_brand"></select><input type="submit" value="Submit"></form>'}]},
+                      input: '<form action="/addBrand"><label for="add_brand">Add the brand </label><input type="text" id="add_brand" name="add_brand" placeholder="Add Brand"><input type="submit" value="Submit"></form><br<br>\
+                      <form action="/removeBrand"><label for="remove_brand">Remove the brand </label><select class="brand_list" name="remove_brand"></select><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Search supplements by condition',
-                      input: '<form>Search supplements that treat <select class="cond_list" name="treat_cond"></select>\
+                      input: '<form action="/supplementsByCondtion">Search supplements that treat <select class="cond_list" name="treat_cond"></select>\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Search supplements by brand',
-                      input: '<form>Search supplements that are made by <select class="brand_list" name="update_supp_brand"></select>\
+                      input: '<form action="/supplementsByBrand">Search supplements that are made by <select class="brand_list" name="update_supp_brand"></select>\
                       <input type="submit" value="Submit"></form>'}]},
        ]}
      );
@@ -195,7 +194,7 @@ app.get('/articles', function (req, res) {
   res.render('form', { title: 'Articles', actions:[
     {action: [
       {question: 'Add an article to library',
-      input: '<form><label for="title">Title: </label><input type="text" id="title" name="title" placeholder="article title"><br>\
+      input: '<form action="/addArticle"><label for="title">Title: </label><input type="text" id="title" name="title" placeholder="article title"><br>\
       <label for="art_supp_list">Article is related to condition: </label><select class="cond_list" name="add_art_cond"></select><br>\
       <label for="art_cond_list">Article is related to supplement: </label><input type="text" id="add_supp_type" name="add_supp_type" placeholder="Supplement Type"> from <select class="brand_list" name="add_art_supp"></select><br>\
       <label for="author">Author: </label><input type="text" id="author" name="author" placeholder="author"><br>\
@@ -206,19 +205,17 @@ app.get('/articles', function (req, res) {
 
     {action: [
       {question: 'Search articles by condition',
-      input: '<form>Search articles by condition <select class="cond_list" name="old_cond"></select></select>\
+      input: '<form action="/articlesByCondtion">Search articles by condition <select class="cond_list" name="cond"></select></select>\
       <input type="submit" value="Submit"></form>'}]},
 
     {action: [
       {question: 'Search articles by supplement',
-      input: '<form><label for="art_from_supp">Search articles by supplement </label><input type="text" id="art_from_supp" name="art_from_supp" placeholder="Supplement Type"></select>\
+      input: '<form action="/articlesBySupplement"><label for="art_from_supp">Search articles by supplement </label><input type="text" id="art_from_supp" name="art_from_supp" placeholder="Supplement Type"></select>\
       <input type="submit" value="Submit"></form>'}]},
-
-
 
     {action: [
       {question: 'Update an article in library',
-      input: '<form><label for="old_title">Title of Article to Update: </label><input type="text" id="old_title" name="old_title" placeholder="article title to update"><br><br>\
+      input: '<form action="/updateArticle"><label for="old_title">Title of Article to Update: </label><input type="text" id="old_title" name="old_title" placeholder="article title to update"><br><br>\
       <label for="new_title">Updated Title: </label><input type="text" id="new_title" name="new_title" placeholder="updated title"><br>\
       <label for="add_remove_art_supp">Add/Remove </label> <select name="add_remove_art_supp" id="add_remove_art_supp"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
       relation to condition: <select class="cond_list" name="add_remove_art_cond_list"></select><br>\
@@ -232,7 +229,7 @@ app.get('/articles', function (req, res) {
 
       {action: [
         {question: 'Remove an article from library',
-        input: '<form><label for="title_to_remove">Title of Article to Remove: </label><input type="text" id="title_to_remove" name="title_to_remove" placeholder="article title to remove"><br>\
+        input: '<form action="/removeArticle"><label for="title_to_remove">Title of Article to Remove: </label><input type="text" id="title_to_remove" name="title_to_remove" placeholder="article title to remove"><br>\
         <input type="submit" value="Submit"> </form>'}]}
     ]}
     );
@@ -357,14 +354,215 @@ app.get('/articles', function (req, res) {
   app.get('/makeRecommendation', function(req, res) {
     //if (check for multiple records and Confirmation )
     //else
-    recommendations = consultationMethods.makeRecommendation(req.query, res, app);
-    if (reccomendations) {
+    reccomendations = consultationMethods.makeRecommendation(req.query, res, app);
+    //Send to Choice Screen
+    if (reccomendations[1].choices == 'true') {
+      res.render('reccomendations', reccomendations[1]);
+    }
+    //Confirmation Screen
+    else if (reccomendations[1].choices == 'false'){
       res.render('read', reccomendations[1]);
     }
     else {
       res.render('failure', req.query);
     }
-  })
+  });
+
+  app.get('/viewReccomendations', function(req, res) {
+    reccomendations = consultationMethods.viewReccomendations(req.query);
+    if (reccomendations[0]) {
+      if (reccomendations[1]) {
+        //Error handling for multiple entries
+
+      }
+      res.render('read', reccomendations[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/removeReccomendations', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    reccomendations = consultationMethods.removeReccomendations(req.query, res, app);
+    //Send to Choice Screen
+    if (reccomendations[1].choices == 'true') {
+      res.render('reccomendations', reccomendations[1]);
+    }
+    //Confirmation Screen
+    else if (reccomendations[1].choices == 'false'){
+      res.render('read', reccomendations[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/addArticle', function(req, res) {
+    data = articleMethods.addArticle(req.query);
+    if (data[0] ) {
+      res.render('read', data[1]) ;
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/articlesByCondtion', function(req, res) {
+    articles = articleMethods.articlesByCondition(req.query);
+    if (articles[0]) {
+      res.render('read', articles[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/articlesBySupplement', function(req, res) {
+    articles = articleMethods.articlesBySupplement(req.query);
+    if (articles[0]) {
+      res.render('read', articles[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/updateArticle', function(req, res) {
+    articles = articleMethods.updateArticle(req.query);
+    if (articles[0]) {
+      if (articles[1]) {
+        //Logice for multiple records
+      }
+      res.render('read', articles[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/removeArticle', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    deleted = articleMethods.removeArticle(req.query);
+    if (deleted[0]) {
+      res.render('read', deleted[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/addSupplement', function(req, res) {
+    data = supplementMethods.addSupplement(req.query);
+    if (data[0] ) {
+      res.render('read', data[1]) ;
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/updateSupplement', function(req, res) {
+    data = supplementMethods.updateSupplement(req.query);
+    if (data[0]) {
+      if (data[1]) {
+        //Logice for multiple records
+      }
+      res.render('read', data[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/addBrand', function(req, res) {
+    data = supplementMethods.addBrand(req.query);
+    if (data[0] ) {
+      res.render('read', data[1]) ;
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/removeBrand', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    deleted = supplementMethods.removeBrand(req.query);
+    if (deleted[0]) {
+      res.render('read', deleted[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/supplementsByCondtion', function(req, res) {
+    data = supplementMethods.supplementsByCondition(req.query);
+    if (data[0]) {
+      res.render('read', data[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/supplementsByBrand', function(req, res) {
+    data = supplementMethods.supplementsByBrand(req.query);
+    if (data[0]) {
+      res.render('read', data[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/addCondition', function(req, res) {
+    data = conditionMethods.addCondition(req.query);
+    if (data[0] ) {
+      res.render('read', data[1]) ;
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/removeCondition', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    deleted = conditionMethods.removeCondition(req.query);
+    if (deleted[0]) {
+      res.render('read', deleted[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/updateCondition', function(req, res) {
+    data = conditionMethods.updateCondition(req.query);
+    if (data[0]) {
+      if (data[1]) {
+        //Logice for multiple records
+      }
+      res.render('read', data[2]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/getCondtions', function(req, res) {
+    data = conditionMethods.getConditions(req.query);
+    if (data[0]) {
+      res.render('read', data[1]);
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
 
 app.listen(app.get('port'), function(){
   console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
