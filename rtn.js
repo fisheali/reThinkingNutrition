@@ -22,7 +22,7 @@ app.set('port', 8522);
 
 
 //Serve webpages
-app.get('/', function (req, res) {
+app.get('/index', function (req, res) {
     res.render('home');
 });
 
