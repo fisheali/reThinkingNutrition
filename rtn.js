@@ -205,7 +205,7 @@ app.get('/articles', function (req, res) {
 
     {action: [
       {question: 'Search articles by condition',
-      input: '<form action="/articlesByCondtion">Search articles by condition <select class="cond_list" name="cond"></select></select>\
+      input: '<form action="/articlesByCondition">Search articles by condition <select class="cond_list" name="cond"></select></select>\
       <input type="submit" value="Submit"></form>'}]},
 
     {action: [
@@ -409,7 +409,7 @@ app.get('/articles', function (req, res) {
     }
   });
 
-  app.get('/articlesByCondtion', function(req, res) {
+  app.get('/articlesByCondition', function(req, res) {
     articles = articleMethods.articlesByCondition(req.query);
     if (articles[0]) {
       res.render('read', articles[1]);
