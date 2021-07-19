@@ -88,6 +88,17 @@ a {
   transform: scale(.5);
 }
 
+#about{
+  text-decoration: underline;
+  color: blue;
+}
+
+#about_page{
+  margin: 0% 30%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  font-size: 1.25em;
+}
 #page_title {
   font-size: 5em;
 }
