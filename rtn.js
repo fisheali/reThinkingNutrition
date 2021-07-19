@@ -26,6 +26,9 @@ app.get('/', function (req, res) {
     res.render('home');
 });
 
+app.get('/about', (req,res) => {
+    res.render('about');
+})
 app.get('/conditions', function (req, res) {
   res.render('form', { title: 'Conditions', actions: [
                       {action: [
