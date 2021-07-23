@@ -20,7 +20,6 @@ app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', 8522);
 
-
 //Serve webpages
 app.get('/', function (req, res) {
     res.render('home');
