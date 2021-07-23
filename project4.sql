@@ -7,7 +7,6 @@ Section A: Data Definition Queries
 */
 
 DROP TABLE IF EXISTS Supplements_Articles;
-DROP TABLE IF EXISTS Supplements_Stores;
 DROP TABLE IF EXISTS Conditions_Supplements;
 DROP TABLE IF EXISTS Clients_Supplements;
 DROP TABLE IF EXISTS Conditions_Articles;
@@ -31,17 +30,17 @@ CREATE TABLE Clients (
 );
 
 CREATE TABLE Conditions (
-  `condition_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `condition_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `condition_name` VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE Brands (
-  `brand_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `brand_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `brand_name` VARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE Articles (
-  `article_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `article_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) UNIQUE NOT NULL,
   `publish_date` DATE,
   `publication` VARCHAR(255),
@@ -50,7 +49,7 @@ CREATE TABLE Articles (
 );
 
 CREATE TABLE Consultations (
-  `consultation_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `consultation_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `date` DATE NOT NULL,
   `time` TIME,
   `completed` BOOLEAN NOT NULL DEFAULT "0",
@@ -76,7 +75,7 @@ CREATE TABLE Conditions_Articles (
 );
 
 CREATE TABLE Supplements (
-  `supplement_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `supplement_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) NOT NULL,
   `brand_id` INT
 );
@@ -89,12 +88,6 @@ CREATE TABLE Clients_Supplements (
 
 CREATE TABLE Conditions_Supplements (
   `condition_id` INT NOT NULL,
-  `supplement_id` INT NOT NULL
-);
-
-CREATE TABLE Supplements_Stores (
-  `price` FLOAT,
-  `store_id` INT NOT NULL,
   `supplement_id` INT NOT NULL
 );
 
@@ -133,6 +126,7 @@ ALTER TABLE Supplements_Articles ADD FOREIGN KEY (`article_id`) REFERENCES `Arti
 
 /*Part B: Sample Data*/
 
+/*Create Entity Tables with Test Data*/
 INSERT INTO Clients (fname, lname, phone, email, address, city) VALUES
 ('Calvin', 'Todd', '703-282-6899', 'toddcal@oregonstate.edu', '220 Evergreen Avenue', 'Imperial Beach'),
 ('Michelle', 'Gomez', '619-550-4200', 'MishSquish@BestGFEver.com', '220 Evergreen Avenue', 'Imperial Beach'),
@@ -180,3 +174,61 @@ INSERT INTO Consultations (date, time, completed, paid, note, client_id) VALUES
 ('2021-05-04', '12:30', 1, 0, 'Saw Calvin again this time about his blood pressure.  He blamed it on something called CS344, but I reminded him that fast food like Rally\'s Spicy Chicken Sandwhiches can cuase High Blood Pressure as Well.  He started Crying.', (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
 ('2022-03-09', '12:30', 0, 0, '', (SELECT client_id FROM Clients WHERE fname = 'Rockito')),
 ('2023-05-03', '12:30', 0, 0, '', (SELECT client_id FROM Clients WHERE fname = 'Queso'));
+
+INSERT INTO Supplements (type, brand_id) VALUES
+('Milkthistle', (SELECT brand_id FROM Brands WHERE brand_name = 'Rockin Rocko\'s')),
+('Magnesium', (SELECT brand_id FROM Brands WHERE brand_name = 'Rockin Rocko\'s')),
+('Cats Whiskers', (SELECT brand_id FROM Brands WHERE brand_name = 'Rockin Rocko\'s')),
+('Vitamin C', (SELECT client_id FROM Clients WHERE fname = 'Generic')),
+('Iron', (SELECT client_id FROM Clients WHERE fname = 'Generic')),
+('Valarian Root', (SELECT client_id FROM Clients WHERE fname = 'Miracle Pills')),
+('Eye of Newt', (SELECT client_id FROM Clients WHERE fname = 'Miracle Pills')),
+('Vitamin D', (SELECT client_id FROM Clients WHERE fname = 'Flintstone Vitamin Company')),
+('Multi(pass) Vitamin', (SELECT brand_id FROM Brands WHERE brand_name = 'Nature\'s Choice')),
+('Calcium', (SELECT brand_id FROM Brands WHERE brand_name = 'Nature\'s Choice')),
+('Fiber', (SELECT client_id FROM Clients WHERE fname = 'Flintstone Vitamin Company')),
+('Vitamin B', (SELECT client_id FROM Clients WHERE fname = 'Generic'));
+
+/*Intersection Tables with Test Data*/
+
+INSERT INTO Clients_Articles (date_recommended, article_id, client_id) VALUES
+('2021-05-03', (SELECT article_id FROM Articles WHERE title = 'Bear Attacks and Low Energy, a New Study'), (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
+('2021-01-30', (SELECT article_id FROM Articles WHERE title = 'How Cat\s Can Cure Diabetes'),(SELECT client_id FROM Clients WHERE fname = 'Michelle')),
+('2021-05-04', (SELECT article_id FROM Articles WHERE title = 'Bear Attacks and Weight Loss, Another New Study'),(SELECT client_id FROM Clients WHERE fname = 'Calvin')),
+('2022-03-09', (SELECT article_id FROM Articles WHERE title = 'How Dinosaurs Dealt with Gut Health'),(SELECT client_id FROM Clients WHERE fname = 'Rockito')),
+('2023-05-03', (SELECT article_id FROM Articles WHERE title = 'Magic Brian\'s Weight Loss Tips'),(SELECT client_id FROM Clients WHERE fname = 'Queso'));
+
+INSERT INTO Clients_Conditions (client_id, condition_id) VALUES
+((SELECT client_id FROM Clients WHERE fname = 'Calvin'), (SELECT condition_id FROM Conditions WHERE condition_name = 'High Blood Pressure')),
+((SELECT client_id FROM Clients WHERE fname = 'Michelle'), (SELECT condition_id FROM Conditions WHERE condition_name = 'Low Energy')),
+((SELECT client_id FROM Clients WHERE fname = 'Calvin'), (SELECT condition_id FROM Conditions WHERE condition_name = 'Low Energy')),
+((SELECT client_id FROM Clients WHERE fname = 'Rockito'), (SELECT condition_id FROM Conditions WHERE condition_name = 'Gut Health')),
+((SELECT client_id FROM Clients WHERE fname = 'Queso'), (SELECT condition_id FROM Conditions WHERE condition_name = 'Non-Alcoholic Fatty Liver'));
+
+INSERT INTO Conditions_Articles (condition_id, article_id) VALUES
+((SELECT condition_id FROM Conditions WHERE condition_name = 'High Blood Pressure'), (SELECT article_id FROM Articles WHERE title = 'Bear Attacks and Low Energy, a New Study')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Non-Alcoholic Fatty Liver'),(SELECT article_id FROM Articles WHERE title = 'Margarita Recipes for Non-Alcoholic Fatty Liver')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Low Energy'),(SELECT article_id FROM Articles WHERE title = 'Best Supplements for Low Energy')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Gut Health'),(SELECT article_id FROM Articles WHERE title = 'How Dinosaurs Dealt with Gut Health')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Non-Alcoholic Fatty Liver'),(SELECT article_id FROM Articles WHERE title = 'Miracle Pills Milkthistle Fixed My Liver'));
+
+INSERT INTO Clients_Supplements (date_recommended, supplement_id, client_id) VALUES
+('2021-05-03', (SELECT supplement_id FROM Supplements WHERE type = 'Multi(pass) Vitamin'), (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
+('2021-01-30', (SELECT supplement_id FROM Supplements WHERE type = 'Magnesium'),(SELECT client_id FROM Clients WHERE fname = 'Michelle')),
+('2021-05-04', (SELECT supplement_id FROM Supplements WHERE type = 'Fiber'),(SELECT client_id FROM Clients WHERE fname = 'Calvin')),
+('2022-03-09', (SELECT supplement_id FROM Supplements WHERE type = 'Eye of Newt'),(SELECT client_id FROM Clients WHERE fname = 'Rockito')),
+('2023-05-03', (SELECT supplement_id FROM Supplements WHERE type = 'Magnesium'),(SELECT client_id FROM Clients WHERE fname = 'Queso'));
+
+INSERT INTO Conditions_Supplements (condition_id, supplement_id) values
+((SELECT condition_id FROM Conditions WHERE condition_name = 'High Blood Pressure'), (SELECT supplement_id FROM Supplements WHERE type = 'Magnesium')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Non-Alcoholic Fatty Liver'),(SELECT supplement_id FROM Supplements WHERE type = 'Magnesium')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Low Energy'),(SELECT supplement_id FROM Supplements WHERE type = 'Multi(pass) Vitamin')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Gut Health'),(SELECT supplement_id FROM Supplements WHERE type = 'Fiber')),
+((SELECT condition_id FROM Conditions WHERE condition_name = 'Non-Alcoholic Fatty Liver'),(SELECT supplement_id FROM Supplements WHERE type = 'Eye of Newt'));
+
+INSERT INTO Supplements_Articles (supplement_id, article_id) VALUES
+((SELECT supplement_id FROM Supplements WHERE type = 'Multi(pass) Vitamin'), (SELECT article_id FROM Articles WHERE title = 'Bear Attacks and Low Energy, a New Study')),
+((SELECT supplement_id FROM Supplements WHERE type = 'Magnesium'), (SELECT article_id FROM Articles WHERE title = 'Rockin Rocko\'s Miracle Magnesium Poisons Entire City')),
+((SELECT supplement_id FROM Supplements WHERE type = 'Fiber'), (SELECT article_id FROM Articles WHERE title = 'How Dinosaurs Dealt with Gut Health')),
+((SELECT supplement_id FROM Supplements WHERE type = 'Eye of Newt'), (SELECT article_id FROM Articles WHERE title = 'Margarita Recipes for Non-Alcoholic Fatty Liver')),
+((SELECT supplement_id FROM Supplements WHERE type = 'Milkthistle'), (SELECT article_id FROM Articles WHERE title = 'Miracle Pills Milkthistle Fixed My Liver'));
