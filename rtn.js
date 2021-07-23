@@ -85,11 +85,6 @@ app.get('/clients', function (req, res) {
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
-                      {question: 'Add/Remove Client Condition',
-                      input: '<form action="/addRemoveCond"><label for="add_or_remove"><select name="add_or_remove" id="add_or_remove"><option value="Add">Add</option><option value="Remove">Remove</option></select>\
-                      <label for="client_cond"> </label><select required class="cond_list" name="client_cond" required></select><label for="client_cond_name"> for/from treatment to client  <input required type="text" id="client_cond_name" name="client_cond_name" placeholder="Last Name, First Name" required></label><input type="submit" value="Submit"></form>'}]},
-
-                      {action: [
                       {question: 'View open (unpaid) invoices',
                       input: '<form action="/unpaidInvoices"><label for="open_invoice">View open invoices from the last: <select name="time_frame" id="time_frame"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select><input type="submit" value="Submit"></form>'}]},
 
@@ -133,11 +128,15 @@ app.get('/consultations', function (req, res) {
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
-                        {question: 'Remove a consultation',
-                        input: '<form action="/deleteConsultation"><label for="remove_consultation">Remove a consultation for </label><input required type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="remove_consultation_date"> <br>\
-                        on </label><input required type="date" name="update_consultation_date" id="update_consultation_date">:<br>\
-                        <input type="submit" value="Submit"></form>'}]},
+                      {question: 'Remove a consultation',
+                      input: '<form action="/deleteConsultation"><label for="remove_consultation">Remove a consultation for </label><input required type="text" id="update_consultation_client" name="update_consultation_client" placeholder="Last Name, First Name"><label for="remove_consultation_date"> <br>\
+                      on </label><input required type="date" name="update_consultation_date" id="update_consultation_date">:<br>\
+                      <input type="submit" value="Submit"></form>'}]},
 
+                      {action: [
+                      {question: 'Add/Remove Client Condition',
+                      input: '<form action="/addRemoveCond"><label for="add_or_remove"><select name="add_or_remove" id="add_or_remove"><option value="Add">Add</option><option value="Remove">Remove</option></select>\
+                      <label for="client_cond"> </label><select required class="cond_list" name="client_cond" required></select><label for="client_cond_name"> for/from treatment to client  <input required type="text" id="client_cond_name" name="client_cond_name" placeholder="Last Name, First Name" required></label><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Add a new recommendation for a client',
@@ -148,14 +147,14 @@ app.get('/consultations', function (req, res) {
                       <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
-                        {question: 'View recommendations',
-                        input: '<form action="/viewRecommendations"><label for="view_client_recommendation">View Recommendations for: </label><input required type="text" id="view_client_recommendation" name="view_client_recommendation" placeholder="Last Name, First Name"><br>\
-                        <input type="submit" value="Submit"></form>'}]},
+                      {question: 'View recommendations',
+                      input: '<form action="/viewRecommendations"><label for="view_client_recommendation">View Recommendations for: </label><input required type="text" id="view_client_recommendation" name="view_client_recommendation" placeholder="Last Name, First Name"><br>\
+                      <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
-                        {question: 'Remove an existing recommendation',
-                        input: '<form action="/removeRecommendations"><label for="client_recommendation">Remove Recommendation for: </label><input required type="text" id="client_recommendation" name="client_recommendation" placeholder="Last Name, First Name"><br>\
-                        <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]}
+                      {question: 'Remove an existing recommendation',
+                      input: '<form action="/removeRecommendations"><label for="client_recommendation">Remove Recommendation for: </label><input required type="text" id="client_recommendation" name="client_recommendation" placeholder="Last Name, First Name"><br>\
+                      <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]}
        ]}
      );
 });
