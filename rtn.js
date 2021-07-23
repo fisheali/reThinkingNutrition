@@ -81,6 +81,10 @@ app.get('/clients', function (req, res) {
                       <label for="update_client_city">Updated City: </label><input type="text" id="updated_client_city" name="updated_client_city" placeholder="updated city"><br>\
                       <input type="submit" value="Submit"></form>'}]},
 
+                      {action: [
+                      {question: 'Add/Remove Client Condition',
+                      input: '<form action="/addRemoveCond"><label for="add_or_remove"><select name="add_or_remove" id="add_or_remove"><option value="Add">Add</option><option value="Remove">Remove</option></select>\
+                      <label for="client_cond"> </label><select required class="cond_list" name="client_cond" required></select><label for="client_cond_name"> for/from treatment to client  <input required type="text" id="client_cond_name" name="client_cond_name" placeholder="Last Name, First Name" required></label><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'View open (unpaid) invoices',
@@ -91,11 +95,10 @@ app.get('/clients', function (req, res) {
                       input: '<form action="/clientInvoices"><label for="get_invoice">Client Name: <input required type="text" id="get_invoice" name="get_invoice" placeholder="Last Name, First Name"></label><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
-                        {question: 'Remove a client',
-                        input: '<form action="deleteClient"><label for="client_remove">Remove the following client: <input required type="text" id="client_remove" name="client_remove" placeholder="Last Name, First Name"></label><input type="submit" value="Submit" onclick="return confirm("Are you sure you want to delete this item?");"></form>'}]}
+                      {question: 'Remove a client',
+                      input: '<form action="deleteClient"><label for="client_remove">Remove the following client: <input required type="text" id="client_remove" name="client_remove" placeholder="Last Name, First Name"></label><input type="submit" value="Submit" onclick="return confirm("Are you sure you want to delete this item?");"></form>'}]}
 
-
-                    ]}
+          ]}
      );
 });
 
@@ -187,7 +190,7 @@ app.get('/supplements', function (req, res) {
                         {question: 'Manage brands (add or remove a brand)',
                         input: '<form action="/addBrand"><label for="add_brand">Add the brand </label><input type="text" id="add_brand" name="add_brand" placeholder="Add Brand"><br><input type="submit" value="Submit"></form><br<br>\
                         <form action="/removeBrand"><label for="remove_brand">Remove the brand </label><select class="brand_list" name="remove_brand"></select><br><input type="submit" value="Submit"></form>'}]}
-                       
+
        ]}
      );
 });
@@ -267,6 +270,18 @@ app.get('/articles', function (req, res) {
         //Logice for multiple records
       }
       res.render('success', {title: "Update Client Records", values: Object.values(records[2].values[0])});
+    }
+    else {
+      res.render('failure', req.query);
+    }
+  });
+
+  app.get('/addRemoveClientCond', function(req, res) {
+    //if (check for multiple records and Confirmation )
+    //else
+    data = clientMethods.addRemoveClientCond(req.query);
+    if (data) {
+      res.render('success', {title : "Deleted Client", values : Object.values(deleted[2].values[0])});
     }
     else {
       res.render('failure', req.query);

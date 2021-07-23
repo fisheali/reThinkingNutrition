@@ -153,6 +153,35 @@ function deleteClient(data) {
   return [true, true, data]
 }
 
+function addRemoveClientCond(data) {
+  //log data fro debug
+  console.log(data);
+  //If Else to create title based on Add or Remove
+  title = "Add/Remove Client";
+
+  //Database call logic
+
+  //Logic to check if there are multiple records returned
+
+  //placeholder data
+  sql_data =
+  [
+    {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "address": "220 Evergreen", "city": "Imperial Beach"}
+  ];
+
+//Potential Data Format Method
+  val = []
+  for (i = 0; i < sql_data.length; i++) {
+    val.push({value : Object.values(sql_data[i])});
+  }
+
+  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+
+
+  //Return [bool for success, bool for multiple records, data]
+  return [true, true, data]
+}
+
 
 
 exports.addClient = addClient;
