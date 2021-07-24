@@ -77,7 +77,7 @@ CREATE TABLE Conditions_Articles (
 CREATE TABLE Supplements (
   `supplement_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) NOT NULL,
-  `brand_id` INT
+  `brand_id` INT NOT NULL
 );
 
 CREATE TABLE Clients_Supplements (

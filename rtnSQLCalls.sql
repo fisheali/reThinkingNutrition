@@ -363,3 +363,100 @@ FROM Articles a
 WHERE article_id = $article_id;
 
 /*SUpplement Data Queries*/
+/*Add Article*/
+INSERT INTO Supplements (type, brand_id)
+VALUES ($type, $$brand_id)
+
+/*If Condition added*/
+INSERT INTO Conditions_Supplements (condition_id, supplement_id)
+VALUES ($condition_id, $supplement_id);
+
+/*Update Supplement*/
+/*Filter Supplements by type and validate specific supplement*/
+SELECT supplement_id AS 'Supplement ID', type AS 'Type', brand_name as 'Brand_name'
+FROM Supplements
+LEFT JOIN Brands
+USING (brand_id)
+WHERE type = $type;
+
+UPDATE Supplements
+SET (type = $type, brand_id = $brand_id);
+
+/*If adding a new condtion*/
+INSERT INTO Conditions_Supplements (condition_id, supplement_id)
+VALUES ($condition_id, $supplement_id);
+
+/*If Removing Condition*/
+DELETE
+FROM Conditions_Supplements
+WHERE condition_id = $condition_id AND supplement_id = $supplement_id;
+
+/*Search Supplements by Condtion*/
+SELECT supplement_id AS 'Supplement ID', type AS 'Type', brand_name AS 'Brand Name'
+FROM Supplements s
+JOIN Conditions_Supplements cs
+USING (supplement_id)
+JOIN Conditions c
+USING (condition_id)
+LEFT JOIN Brands b
+USING (brand_id)
+WHERE condition_id = $condition_id;
+
+/*Search supplements by Brands*/
+SELECT supplement_id AS 'Supplement ID', type AS 'Type', brand_name AS 'Brand Name'
+FROM Supplements
+JOIN Brands
+USING (brand_id)
+WHERE brand_id = $brand_id;
+
+/*Manage Brands*/
+/*Add a Brand*/
+INSERT INTO Brands (brand_name)
+VALUES ($brand_name);
+
+/*Remove a Brand*/
+DELETE
+FROM Brands
+WHERE brand_id = $brand_id;
+
+/*Condtion Data Queries*/
+/*Add Condition for Treatment*/
+INSERT INTO Conditions (condition_name)
+VALUES ($condition_name);
+
+/*View ALl Conditions*/
+SELECT *
+FROM Conditions;
+
+/*Update a Condition*/
+UPDATE Condtions
+SET (condition_name = $condition_name)
+WHERE condition_id = $condition_id;
+
+/*Remove a Condition*/
+DELETE
+FROM Conditions
+WHERE condition_id = $condition_id;
+
+/*Other Data Queries*/
+/*Dynamically Get List of Conditions Excluding Ones with supp treatement reltationship*/
+SELECT condition_id, condition_name
+FROM Conditions
+LEFT JOIN Conditions_Supplements
+USING (condition_id)
+LEFT JOIN Supplements
+USING (supplement_id)
+WHERE supplement_id != $supplement_id OR supplement_id IS NULL;
+
+/*Dynamically Get List of Conditions associated with supp treatement reltationship*/
+SELECT condition_id, condition_name
+FROM Conditions
+JOIN Conditions_Supplements
+USING (condition_id)
+JOIN Supplements
+USING (supplement_id)
+WHERE supplement_id = $supplement_id;
+
+/*Dynamically get list of all COnditions*/
+SELECT condition_id, condition_name
+FROM Conditions;
