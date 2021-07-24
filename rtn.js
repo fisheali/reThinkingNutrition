@@ -572,7 +572,7 @@ app.get('/articles', function (req, res) {
     }
   });
 
-  app.get('/getCondtions', function(req, res) {
+  app.get('/getConditions', function(req, res) {
     data = conditionMethods.getConditions(req.query);
     if (data[0]) {
       res.render('read', data[1]);
