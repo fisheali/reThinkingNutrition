@@ -75,33 +75,291 @@ WHERE (fname = $firstname
   AND lname = $lastname)
   OR (client_id = $$client_id);
 
-  /*View Open Invoices for Time Period*/
-  SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', completed AS 'Completed', paid AS 'Paid?'
-  FROM Consultations co
-  LEFT JOIN Clients cl
-  USING (client_id)
-  WHERE paid = 0
-    AND DATE_SUB(CURDATE(), INTERVAL $dayRange DAY) > DATEDIFF(CURDATE(), date);
+/*View Open Invoices for Time Period*/
+SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', completed AS 'Completed', paid AS 'Paid?'
+FROM Consultations co
+LEFT JOIN Clients cl
+USING (client_id)
+WHERE paid = 0
+  AND DATE_SUB(CURDATE(), INTERVAL $dayRange DAY) > DATEDIFF(CURDATE(), date);
 
-  /*Get Client Invoices*/
-  SELECT fname AS 'First Name', lname AS 'Last Name', date AS 'Consultation Date', paid AS "Paid?", phone AS 'Phone Number', email AS 'Email Address'
-  FROM Consultations co
-  LEFT JOIN Clients cl
-  USING (client_id)
-  WHERE (fname = $firstname
-    AND lname = $lastname)
-    OR (client_id = $$client_id);
+/*Get Client Invoices*/
+SELECT fname AS 'First Name', lname AS 'Last Name', date AS 'Consultation Date', paid AS "Paid?", phone AS 'Phone Number', email AS 'Email Address'
+FROM Consultations co
+LEFT JOIN Clients cl
+USING (client_id)
+WHERE (fname = $firstname
+  AND lname = $lastname)
+  OR (client_id = $$client_id);
 
-  /*Remove a Client*/
-  /*Get List for processing in case there are multiple clients witht he same last name*/
-  SELECT *
-  FROM Clients cl
-  WHERE (fname = $fname
-    AND lname = $lname)
-    OR (client_id = $$client_id);
+/*Remove a Client*/
+/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+SELECT *
+FROM Clients cl
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (client_id = $$client_id);
 
-  DELETE
-  FROM Clients
-  WHERE (fname = $firstname
-    AND lname = $lastname)
-    OR (client_id = $$client_id);
+DELETE
+FROM Clients
+WHERE (fname = $firstname
+  AND lname = $lastname)
+  OR (client_id = $$client_id);
+
+  /*Consultations Section*/
+
+/*Add a Consultation*/
+/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+SELECT *
+FROM Clients cl
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (client_id = $$client_id);
+
+INSERT INTO Consultations (date, time, client_id)
+VALUES ($date, $time, $client_id);
+
+/*View Upcoming Consultations*/
+/*Specific Client*/
+/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+SELECT *
+FROM Clients cl
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (client_id = $$client_id);
+
+SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time'
+FROM Consultations
+LEFT JOIN Clients
+USING (client_id)
+WHERE DATEDIFF(DATE_ADD(CURDATE(), INTERVAL $dayRange DAY), date) >= 0
+AND date > CURDATE()
+AND client_id = $$client_id;
+
+/*Get for All Clients*/
+SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time'
+FROM Consultations
+LEFT JOIN Clients
+USING (client_id)
+WHERE DATEDIFF(DATE_ADD(CURDATE(), INTERVAL $dayRange DAY), date) >= 0
+AND date > CURDATE();
+
+/*Update a Consultation*/
+/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+SELECT *
+FROM Clients cl
+LEFT JOIN Consultations co
+USING (client_id)
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (consultation_id = $$consultation_id);
+
+UPDATE Consultations
+SET date = $date, time = $time, completed = $completed, paid = $paid, note = $note
+WHERE consultation_id = $$consultation_id;
+
+/*Remove a Consultation*/
+SELECT *
+FROM Clients cl
+LEFT JOIN Consultations co
+USING (client_id)
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (consultation_id = $$consultation_id);
+
+DELETE
+FROM Consultations
+WHERE (fname = $firstname
+  AND lname = $lastname)
+  OR (consultation_id = $$consultation_id);
+
+/*Add/Remove Client COndition */
+/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+SELECT *
+FROM Clients cl
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (client_id = $$client_id);
+
+/*Add Condition*/
+INSERT INTO Clients_Conditions (client_id, condition_id)
+VALUES ($$client_id, (SELECT condition_id FROM Conditions WHERE condition_name = $condition_name));
+
+/*Remove Condition*/
+DELETE
+FROM Clients_Conditions
+WHERE client_id = $$client_id
+AND (SELECT condition_id FROM Condtions WHERE condition_name = $condition_name));
+
+/*Add reccomendation for Client*/
+/*Check for duplicate name records*/
+SELECT *
+FROM Clients cl
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (client_id = $$client_id);
+
+/*Get reccomendations based on Conditions and Supplement IF supplement flag*/
+SELECT co.condition_name AS 'Condition Name', type AS 'Type', brand_name AS 'Brand'
+FROM Conditions co
+JOIN Conditions_Supplements cs
+USING (condition_id)
+JOIN
+(
+     SELECT s.supplement_id, s.type, s.brand_id
+     FROM Supplements s
+     LEFT JOIN
+     (
+         SELECT client_id, supplement_id
+         FROM Clients_Supplements cl
+         WHERE client_id = $client_id
+     ) as cs
+     ON (s.supplement_id = cs.supplement_id)
+     WHERE client_id IS NULL
+) css
+ON (cs.supplement_id = css.supplement_id)
+LEFT JOIN Brands b
+ON (css.brand_id = b.brand_id)
+WHERE (condition_id = $condition_id);
+
+/*Get reccomendations based on Conditions and Articles IF article flag*/
+SELECT condition_name AS 'Condition Name', title AS 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website'
+FROM Conditions co
+JOIN Conditions_Articles ca
+USING (condition_id)
+JOIN
+(
+     SELECT a.article_id, a.title, a.author, a.publication, a.website
+     FROM Articles a
+     LEFT JOIN
+     (
+         SELECT client_id, article_id
+         FROM Clients_Articles al
+         WHERE client_id = $client_id
+     ) AS asx
+     ON (a.article_id = asx.article_id)
+     WHERE client_id IS NULL
+) asz
+ON (ca.article_id = asz.article_id)
+WHERE (condition_id = $condition_id);
+
+/*Add Reccomendations based on Selections*/
+INSERT INTO Clients_Articles (date_recommended, client_id, article_id)
+VALUES $(CURDATE(), $client_id, $article_id); --Populate number of queries based on selection choice handled in JS
+
+INSERT INTO Clients_Supplements (date_recommended, client_id, supplement_id)
+VALUES $(CURDATE(), $client_id, $supplement_id); --Populate number of queries based on selection choice handled in JS
+
+/*View Reccomendations*/
+/*Check for duplicate name records*/
+SELECT *
+FROM Clients cl
+WHERE (fname = $fname
+  AND lname = $lname)
+  OR (client_id = $$client_id);
+
+/*Table pull for article recommendations*/
+SELECT fname AS 'First Name', lname AS 'Last Name', article_id as 'Article ID', date_recommended AS 'Date Reccomended', title AS 'Title', author AS 'Author', publication AS 'Publication', website as 'Website'
+FROM Clients c
+JOIN Clients_Articles ca
+USING (client_id)
+JOIN Articles a
+USING (article_id)
+WHERE client_id = $client_id;
+
+/*Table pull for Supplement Reccomendations*/
+SELECT fname AS 'First Name', lname AS 'Last Name', supplement_id as 'Supplement ID', date_recommended AS 'Date Reccomended', type AS 'Type', brand_name AS 'Brand'
+FROM Clients c
+USING (client_id)
+JOIN Supplements s
+USING (supplement_id)
+LEFT JOIN Brands b
+USING (brand_id)
+WHERE client_id = $client_id;
+
+/*Article Data Base Queries*/
+/*Add Article*/
+INSERT INTO Articles (title, author, publication, date, website)
+VALUES ($title, $author, $publication, $date, $website)
+
+/*If Condition added*/
+INSERT INTO Conditions_Articles (condition_id, article_id)
+VALUES ($condition_id, (SELECT article_id FROM Articles WHERE title = $title, author = $author, publication = $publication, date = $date, website = $website));
+
+/*If Supplement added*/
+/*Check to see if SUpplement exists*/
+SELECT supplement_id
+FROM Supplements
+WHERE type = $type;
+
+INSERT INTO Supplements_Articles (supplement_id, article_id)
+VALUES ($supplement_id, (SELECT article_id FROM Articles WHERE title = $title, author = $author, publication = $publication, date = $date, website = $website));
+
+/*Search articles by Condition*/
+SELECT article_id AS 'Article ID', title AS 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website'
+FROM Conditions c
+JOIN Conditions_Articles ca
+USING (condition_id)
+JOIN Articles a
+USING (article_id)
+WHERE condition_id = $condition_id;
+
+/*Search Articles by Supplement*/
+SELECT article_id AS 'Article ID', title AS 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website'
+FROM Supplements s
+JOIN Supplements_Articles sa
+USING (supplement_id)
+JOIN Articles a
+USING (article_id)
+WHERE supplement_id = $supplement_id;
+
+/*Update Articles*/
+/*Filter Articles to Update by Title, attempting to implement pattern searching*/
+Select title as 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website', publish_date AS 'Publish Date'
+FROM Articles
+WHERE (title = $title) OR (title LIKE '%$firstTitleWord% %$lastTitleWord%');  --Use LIKE and pattern mathcing with JS variables to get similiar names
+
+UPDATE Articles
+SET (title = $title, publish_date = $publish_date, publication = $publication, author = $author, website = $website)
+WHERE article_id = $article_id;
+
+/*If Conditions flag is set*/
+/*Add Condition*/
+INSERT INTO Conditions_Articles (condition_id, article_id)
+VALUES ($condition_id, (SELECT article_id FROM Articles WHERE title = $title, author = $author, publication = $publication, date = $date, website = $website));
+
+/*Remvoe Condition*/
+DELETE
+FROM Articles_Conditions ac
+WHERE article_id = $article_id AND condition_id = $condition_id;
+
+/*If Supplement Flag is SET*/
+/*Check to see if SUpplement exists*/
+SELECT supplement_id
+FROM Supplements
+WHERE type = $type;
+
+INSERT INTO Supplements_Articles (supplement_id, article_id)
+VALUES ($supplement_id, (SELECT article_id FROM Articles WHERE title = $title, author = $author, publication = $publication, date = $date, website = $website));
+
+/*Remove Supplement*/
+/*Check to see if SUpplement exists*/
+SELECT supplement_id
+FROM Supplements
+WHERE type = $type;
+
+DELETE
+FROM Supplements_Articles sa
+WHERE supplement_id = $supplement_id AND article_id = $article_id;
+
+/*Remove an Article from the Library*/
+/*Check to see if Article exists, andle multiple data*/
+SELECT article_id
+FROM Articles
+WHERE (title = $title) OR (title LIKE '%$firstTitleWord% %$lastTitleWord%');
+
+DELETE
+FROM Articles a
+WHERE article_id = $article_id;
+
+/*SUpplement Data Queries*/

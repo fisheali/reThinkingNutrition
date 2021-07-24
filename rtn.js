@@ -108,7 +108,7 @@ app.get('/clients', function (req, res) {
                         {question: 'View all clients',
                         input: '<form action="viewAllClients"><label for="all_clients">View all clients (update | delete): </label><br>\
                         <input type="submit" value="Submit"</form>'}]}
-  
+
           ]}
      );
 });
@@ -174,19 +174,12 @@ app.get('/consultations', function (req, res) {
                       <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
-                      {question: 'View recommendations',
-                      input: '<form action="/viewRecommendations"><label for="view_client_recommendation">View Recommendations for: </label><br>\
+                      {question: 'View or Remove Recommendations',
+                      input: '<form action="/viewRemoveRecommendations"><label for="view_client_recommendation">View Recommendations for: </label><br>\
                       <label for="view_rec_fname">First Name: </label><input required type="text" id="view_rec_fname" name="client_fname" placeholder="First Name"><br>\
                       <label for="view_rec_lname">Last Name: </label><input required type="text" id="view_rec_lname" name="client_lname" placeholder="Last Name"><br>\
-                      <input type="submit" value="Submit"></form>'}]},
-
-                      {action: [
-                      {question: 'Remove an existing recommendation',
-                      input: '<form action="/removeRecommendations"><label for="client_recommendation">Remove Recommendation for: </label><br>\
-                      <label for="remove_rec_fname">First Name: </label><input required type="text" id="remove_rec_fname" name="client_fname" placeholder="First Name"><br>\
-                      <label for="remove_new_rec_lname">Last Name: </label><input required type="text" id="remove_rec_lname" name="client_lname" placeholder="Last Name"><br>\
-                      <input type="hidden" name="choices" value="true"><input type="submit" value="Submit"></form>'}]}
-       ]}
+                      <input type="submit" value="Submit"></form>'}]}
+          ]}
      );
 });
 
@@ -418,7 +411,7 @@ app.get('/articles', function (req, res) {
     }
   });
 
-  app.get('/viewRecommendations', function(req, res) {
+  app.get('/viewRemoveRecommendations', function(req, res) {
     recommendations = consultationMethods.viewRecommendations(req.query);
     if (recommendations[0]) {
       if (recommendations[1]) {
@@ -426,23 +419,6 @@ app.get('/articles', function (req, res) {
 
       }
       res.render('read', recommendations[2]);
-    }
-    else {
-      res.render('failure', req.query);
-    }
-  });
-
-  app.get('/removeRecommendations', function(req, res) {
-    //if (check for multiple records and Confirmation )
-    //else
-    recommendations = consultationMethods.removeRecommendations(req.query, res, app);
-    //Send to Choice Screen
-    if (recommendations[1].choices == 'true') {
-      res.render('recommendations', recommendations[1]);
-    }
-    //Confirmation Screen
-    else if (recommendations[1].choices == 'false'){
-      res.render('read', recommendations[1]);
     }
     else {
       res.render('failure', req.query);
