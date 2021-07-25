@@ -1,16 +1,18 @@
 //Load Modules
 var express = require('express');
+const mariadb = require('mariadb');
 
 //Load Express and Express Handlebars
 var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 //requires
-var clientMethods =require('./clientMethods.js');
-var consultationMethods =require('./consultationMethods.js');
-var articleMethods =require('./articleMethods.js');
-var supplementMethods =require('./supplementMethods.js');
-var conditionMethods =require('./conditionMethods.js');
+var clientMethods = require('./methods/clientMethods.js');
+var consultationMethods = require('./methods/consultationMethods.js');
+var articleMethods = require('./methods/articleMethods.js');
+var supplementMethods = require('./methods/supplementMethods.js');
+var conditionMethods = require('./methods/conditionMethods.js');
+var databaseMethods = require('./methods/databaseMethods.js');
 
 //Create static file references
 app.use(express.static('public'));
@@ -19,6 +21,9 @@ app.use(express.static('public'));
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', 8526);
+
+//Create Database pool
+const pool = databaseMethods.returnPool();
 
 //Serve webpages
 app.get('/', function (req, res) {
@@ -57,23 +62,24 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'Add new client',
-                      input: '<form action="/clientAdd"><label for="add_client_fname">First Name: </label><input required type="text" id="add_client_fname" name="add_client_fname" placeholder="First Name"><br>\
-                      <label for="add_client_lname">Last Name: </label><input required type="text" id="add_client_lname" name="add_client_lname" placeholder="Last Name"><br>\
-                      <label for="add_client_phone">Phone Number: </label><input required type="tel" id="add_client_phone" name="add_client_phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"><br>\
-                      <label for="add_client_email">Email: </label><input required type="email" id="add_client_email" name="add_client_email" placeholder="email@example.com"><br>\
-                      <label for="add_client_street">Street Address: </label><input required type="text" id="add_client_street" name="add_client_street" placeholder="1234 Example St."><br>\
-                      <label for="add_client_city">City: </label><input required type="text" id="add_client_city" name="add_client_city" placeholder="City"><br>\
+                      input: '<form action="/clientAdd"><label for="fname">First Name: </label><input required type="text" id="fname" name="fname" placeholder="First Name"><br>\
+                      <label for="lname">Last Name: </label><input required type="text" id="lname" name="lname" placeholder="Last Name"><br>\
+                      <label for="phone">Phone Number: </label><input required type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="xxx-xxx-xxxx"><br>\
+                      <label for="email">Email: </label><input required type="email" id="email" name="email" placeholder="email@example.com"><br>\
+                      <label for="street">Street Address: </label><input required type="text" id="street" name="street" placeholder="1234 Example St."><br>\
+                      <label for="city">City: </label><input required type="text" id="city" name="city" placeholder="City"><br>\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Retrieve a client\'s records',
                       input: '<form action="/clientRecords"><label for="get_record">Retrieve the records for:<br>\
-                      <label for="retrieve_client_fname">First Name: </label><input required type="text" id="retrieve_client_fname" name="retrieve_client_fname" placeholder="First Name"><br>\
-                      <label for="retrieve_client_lname">Last Name: </label><input required type="text" id="retrieve_client_lname" name="retrieve_client_lname" placeholder="Last Name"><br>\
+                      <label for="fname">First Name: </label><input required type="text" id="fname" name="fname" placeholder="First Name"><br>\
+                      <label for="lname">Last Name: </label><input required type="text" id="lname" name="lname" placeholder="Last Name"><br>\
+                      <input type="hidden" id="client_id" name="client_id" value="">\
                       Including:<br>\
-                      <input type="checkbox" id="get_record_consultations" name="get_record_consultations" value="consultation_history"<label for="get_record_consultations">Consultation Record</label><br>\
-                      <input type="checkbox" id="get_record_supp" name="get_record_supp" value="supplement_history"><label for="get_record_supp">Supplements Record</label><br>\
-                      <input type="checkbox" id="get_record_articles" name="get_record_articles" value="article_history"><label for="get_record_articles">Articles Record</label><br><input type="submit" value="Submit"></form>'}]},
+                      <input type="checkbox" id="consultations" name="consultations" value="true"><label for="consultations">Consultation Record</label><br>\
+                      <input type="checkbox" id="supplements" name="supplements"" value="true"><label for="supplements">Supplements Record</label><br>\
+                      <input type="checkbox" id="articles" name="articles" value="true"><label for="articles">Articles Record</label><br><input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'Update a client record',
@@ -267,7 +273,7 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/clientAdd', function(req, res) {
-    success = clientMethods.addClient(req.query);
+    success = clientMethods.addClient(req.query, pool);
     if (success) {
       res.render('success', { title: "Client", values: Object.values(req.query) }) ;
     }
@@ -277,16 +283,16 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/clientRecords', function(req, res) {
-    records = clientMethods.clientRecords(req.query);
-    if (records[0]) {
-      if (records[1]) {
-        //Logice for multiple records
-      }
-      res.render('read', records[2]);
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    records = clientMethods.clientRecords(req.query, pool, res);
+    // if (records[0]) {
+    //   if (records[1]) {
+    //     res.render('choices', records[2]);
+    //   }
+    //   res.render('read', records[2]);
+    // }
+    // else {
+    //   res.render('failure', req.query);
+    // }
   });
 
   app.get('/updateClientRecords', function(req, res) {

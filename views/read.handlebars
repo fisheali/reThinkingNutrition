@@ -4,17 +4,17 @@
 </span>
 </a>
 
-  <h1>Records for {{title}}</h1>
-<div class="response">
-  <table>
+    <h1>Records for {{record.[0].title}}</h1>
+    <div class="response">
+    <table>
     <tr>
-    {{#each keys}}
+    {{#each record.[0].keys}}
     <th>
       {{this}}
     </th>
     {{/each}}
     <tr>
-    {{#each values}}
+    {{#each record.[0].values}}
     <tr>
     {{#each value}}
     <th>
@@ -24,28 +24,76 @@
     <tr>
     {{/each}}
   </table>
-    {{#if supplements}}
-  <table>
-    <tr>
-      Reccomended Supplements
-    </tr>
-    {{#each supplement}}
-    <th>
-      {{this}}
-    </th>
-    {{/each}}
-    {{/if}}
-  </table>
-  {{#if articles}}
+  </div>
+
+{{#if consultations}}
+<h1>Record of {{consultations.[0].title}}</h1>
+<div class="response">
 <table>
-  <tr>
-    Reccomended Articles
-  </tr>
-  {{#each articles}}
-  <th>
-    {{this}}
-  </th>
+      <tr>
+  {{#each consultations.[0].keys}}
+      <th>
+            {{this}}
+      </th>
   {{/each}}
-  {{/if}}
-</table>
+      <tr>
+  {{#each consultations.[0].values}}
+      <tr>
+  {{#each value}}
+      <th>
+           {{this}}
+      </th>
+  {{/each}}
+      <tr>
+  {{/each}}
+  </table>
 </div>
+{{/if}}
+
+{{#if supplements}}
+<h1>Reccomended {{supplements.[0].title}}</h1>
+<div class="response">
+<table>
+      <tr>
+  {{#each supplements.[0].keys}}
+      <th>
+            {{this}}
+      </th>
+  {{/each}}
+      <tr>
+  {{#each supplements.[0].values}}
+      <tr>
+  {{#each value}}
+      <th>
+           {{this}}
+      </th>
+  {{/each}}
+      <tr>
+  {{/each}}
+  </table>
+</div>
+{{/if}}
+
+{{#if articles}}
+<h1>Reccomended {{articles.[0].title}}</h1>
+<div class="response">
+<table>
+      <tr>
+  {{#each articles.[0].keys}}
+      <th>
+            {{this}}
+      </th>
+  {{/each}}
+      <tr>
+  {{#each articles.[0].values}}
+      <tr>
+  {{#each value}}
+      <th>
+           {{this}}
+      </th>
+  {{/each}}
+      <tr>
+  {{/each}}
+  </table>
+</div>
+{{/if}}

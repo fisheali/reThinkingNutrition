@@ -105,3 +105,6 @@ dist
 
 # Folders on flip
 web_dev_site/
+
+# dbconn
+dbconn.json

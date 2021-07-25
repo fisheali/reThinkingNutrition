@@ -18,7 +18,7 @@ INSERT INTO Clients (fname, lname, phone, email, address, city)
 VALUES ($add_client_fname, $add_client_lname, $add_client_phone, $add_client_email, $add_client_street, $add_client_city);
 
 /*Retrieve Client's Record*/
-SELECT clinet_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City'
+SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City'
 FROM Clients cl
 WHERE ($firstname = fname
   AND $lastname = lname)
@@ -30,32 +30,34 @@ in the javascript, otherwise an empty value will be passed in $$client_id.
 This is the same in all methods in this section*/
 
 /*IF Consultations flag*/
-SELECT fname AS 'First Name', lname AS 'Last Name', consultation_id AS 'Consultation ID', date AS 'Date', time AS 'Time', completed AS 'Consultation Completed', paid AS 'Paid?', note AS 'Notes'
-FROM Clients cl
-LEFT JOIN Consultations co
-USING (client_id)
-WHERE (fname = $fname
-  AND lname = $lname)
-  OR (client_id = $$client_id);
+  SELECT fname AS 'First Name', lname AS 'Last Name', consultation_id AS 'Consultation ID', date AS 'Date', time AS 'Time', completed AS 'Consultation Completed', paid AS 'Paid?', note AS 'Notes'
+  FROM Clients cl
+  JOIN Consultations co
+  USING (client_id)
+  WHERE (fname = $fname
+    AND lname = $lname)
+    OR (client_id = $$client_id);
 
 /*IF Articles flag*/
-SELECT article_id as 'Article ID', date_recommended AS 'Date Reccomended', title AS 'Title', publish_date AS 'Publish Date', publication AS 'Publication', author AS 'Author', website AS 'Website'
+SELECT article_id AS 'Article ID', date_recommended AS 'Date Reccomended', title AS 'Title', publish_date AS 'Publish Date', publication AS 'Publication', author AS 'Author', website AS 'Website'
 FROM Clients cl
-LEFT JOIN Clients_Articles ca
+JOIN Clients_Articles ca
 USING (client_id)
-LEFT JOIN Articles a
+JOIN Articles a
 USING (article_id)
 WHERE (fname = $firstname
   AND lname = $lastname)
   OR (client_id = $$client_id);
 
 /*If Supplements flag*/
-SELECT supplement_id AS 'Supplement ID', date_recommended AS Date 'Reccomended', type AS 'Type', brand_id AS 'Brand'
+SELECT supplement_id AS 'Supplement ID', date_recommended AS 'Date Reccomended', type AS 'Type', brand_name AS 'Brand'
 FROM Clients cl
-LEFT JOIN Clients_Supplements cs
+JOIN Clients_Supplements cs
 USING (client_id)
-LEFT JOIN Supplements s
+JOIN Supplements s
 USING (supplement_id)
+LEFT JOIN Brands b
+USING (brand_id)
 WHERE (fname = $firstname
   AND lame = $lastname)
   OR (client_id = $$client_id);
@@ -460,3 +462,12 @@ WHERE supplement_id = $supplement_id;
 /*Dynamically get list of all COnditions*/
 SELECT condition_id, condition_name
 FROM Conditions;
+
+/*Dynamically Get List of Conditions Excluding Ones with article reltationship*/
+SELECT condition_id, condition_name
+FROM Conditions
+LEFT JOIN Conditions_Articles
+USING (condition_id)
+LEFT JOIN Articles
+USING (article_id)
+WHERE article_id != $article_id OR article_id IS NULL;
