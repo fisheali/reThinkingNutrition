@@ -169,9 +169,9 @@ INSERT INTO Articles (title, publish_date, publication, author, website) VALUES
 ('Magic Brian\'s Weight Loss Tips', '2006-05-03', '', 'Griffin Macelroy', 'www.TAZ.com');
 
 INSERT INTO Consultations (date, time, completed, paid, note, client_id) VALUES
-('2021-05-03', '12:30', 1, 0, 'Saw Calvin in regards to his Gut Health.  I reccomended him stop eating Rally\'s Spicy Chicken Sandwhiches at 2AM.  He Responded "NEVER" and ran out of the room, presumably to go back to Rally\'s', (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
-('2021-01-30', '12:30', 1, 1, 'Michelle is genuinely one of the best people I have ever seen.  She is healthy and beautiful, and outside a strange obsession with Friends perfect.  No reccomendations made.', (SELECT client_id FROM Clients WHERE fname = 'Michelle')),
-('2021-05-04', '12:30', 1, 0, 'Saw Calvin again this time about his blood pressure.  He blamed it on something called CS344, but I reminded him that fast food like Rally\'s Spicy Chicken Sandwhiches can cuase High Blood Pressure as Well.  He started Crying.', (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
+('2021-05-03', '12:30', 1, 0, 'Saw Calvin in regards to his Gut Health.  I recommended him stop eating Rally\'s Spicy Chicken Sandwiches at 2AM.  He Responded "NEVER" and ran out of the room, presumably to go back to Rally\'s', (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
+('2021-01-30', '12:30', 1, 1, 'Michelle is genuinely one of the best people I have ever seen.  She is healthy and beautiful, and outside a strange obsession with Friends perfect.  No recommendations made.', (SELECT client_id FROM Clients WHERE fname = 'Michelle')),
+('2021-05-04', '12:30', 1, 0, 'Saw Calvin again this time about his blood pressure.  He blamed it on something called CS344, but I reminded him that fast food like Rally\'s Spicy Chicken Sandwiches can cuase High Blood Pressure as Well.  He started Crying.', (SELECT client_id FROM Clients WHERE fname = 'Calvin')),
 ('2022-03-09', '12:30', 0, 0, '', (SELECT client_id FROM Clients WHERE fname = 'Rockito')),
 ('2023-05-03', '12:30', 0, 0, '', (SELECT client_id FROM Clients WHERE fname = 'Queso'));
 
