@@ -42,20 +42,20 @@ CREATE TABLE `Articles` (
 
 INSERT INTO `Articles` (`article_id`, `title`, `publish_date`, `publication`, `author`, `website`) VALUES
 (1, 'Fixing Your Tum Tum', '2021-04-20', 'Doctor Things Weekly', 'Dr. Doktor', 'www.DoctorStuff.com'),
-(2, 'Hearty Heart Health', '2021-05-15', '', 'Henry Cavill', 'www.WitcherTips.com'),
-(3, 'How Cats Can Cure Diabetes', '2021-01-01', '', 'Queso My Cat', 'www.DrKitty.com'),
-(4, 'Rockin Rocko\'s Miracle Magnesium Poisons Entire City', '2021-01-21', 'News and Stuff', 'Miley Cyrus Probably', ''),
+(2, 'Hearty Heart Health', '2021-05-15', NULL, 'Henry Cavill', 'www.WitcherTips.com'),
+(3, 'How Cats Can Cure Diabetes', '2021-01-01', NULL, 'Queso My Cat', 'www.DrKitty.com'),
+(4, 'Rockin Rocko\'s Miracle Magnesium Poisons Entire City', '2021-01-21', 'News and Stuff', 'Miley Cyrus Probably', NULL),
 (5, 'Bear Attacks and Low Energy, a New Study', '2021-08-01', 'Bear With Me Weekly', 'Not A Bear', 'www.ThingsNotWrittenByBears.com'),
-(6, 'Miracle Pills Milkthistle Fixed My Liver', '2021-02-20', '', 'Moe', 'www.MoesTavern.com'),
+(6, 'Miracle Pills Milkthistle Fixed My Liver', '2021-02-20', NULL, 'Moe', 'www.MoesTavern.com'),
 (7, 'Bear Attacks and Weight Loss, Another New Study', '2021-06-09', 'Bear With Me Weekly', 'Also Not A Bear', 'www.ThingsNotWrittenByBears.com'),
 (8, 'OSU CS 344 Linked to Increase in High Blood Pressure', '2021-07-20', 'Beaver Bytes', 'Calvin Todd', 'os1.oregonstate.edu'),
-(9, 'Generic Vitamin D, AKA Sunshine', '2021-10-10', '', 'Brett Farve', 'www.UnimportantPeopleImportantThings.edu'),
-(10, 'How Dinosaurs Dealt with Gut Health', '2021-03-23', '', 'Ross Chandler', 'www.MyGirlfriendKeepsTryingToGetMeToWatchFriendsButIFindTHeCharactersSoAnnoying.com'),
+(9, 'Generic Vitamin D, AKA Sunshine', '2021-10-10', NULL, 'Brett Farve', 'www.UnimportantPeopleImportantThings.edu'),
+(10, 'How Dinosaurs Dealt with Gut Health', '2021-03-23', NULL, 'Ross Chandler', 'www.MyGirlfriendKeepsTryingToGetMeToWatchFriendsButIFindTHeCharactersSoAnnoying.com'),
 (11, 'Weight Loss Dance Party Track List', '2021-04-20', 'Dance Party Quarterly', 'Shakira Shakira', 'www.HipsDontLie.org'),
-(12, 'Best Supplements for Low Energy', '2021-06-30', '', 'The Shamwow Guy', 'www.redbullllll.com'),
-(13, 'Margarita Recipes for Non-Alcoholic Fatty Liver', '2021-09-20', 'Party People Magazine', 'Robert Downy Jr Sr', ''),
+(12, 'Best Supplements for Low Energy', '2021-06-30', NULL, 'The Shamwow Guy', 'www.redbullllll.com'),
+(13, 'Margarita Recipes for Non-Alcoholic Fatty Liver', '2021-09-20', 'Party People Magazine', 'Robert Downy Jr Sr', NULL),
 (14, 'Heart Disease and Water Polo', '2021-04-19', 'Esquire But Fancier', 'Sir Kensington', 'www.SoFancyYo.com'),
-(15, 'Magic Brian\'s Weight Loss Tips', '2006-05-03', '', 'Griffin Macelroy', 'www.TAZ.com');
+(15, 'Magic Brian\'s Weight Loss Tips', '2006-05-03', NULL, 'Griffin Macelroy', 'www.TAZ.com');
 
 -- --------------------------------------------------------
 
@@ -267,8 +267,8 @@ INSERT INTO `Consultations` (`consultation_id`, `date`, `time`, `completed`, `pa
 (1, '2021-05-03', '12:30:00', 1, 0, 'Saw Calvin in regards to his Gut Health.  I reccomended him stop eating Rally\'s Spicy Chicken Sandwhiches at 2AM.  He Responded \"NEVER\" and ran out of the room, presumably to go back to Rally\'s', 1),
 (2, '2021-01-30', '12:30:00', 1, 1, 'Michelle is genuinely one of the best people I have ever seen.  She is healthy and beautiful, and outside a strange obsession with Friends perfect.  No reccomendations made.', 2),
 (3, '2021-05-04', '12:30:00', 1, 0, 'Saw Calvin again this time about his blood pressure.  He blamed it on something called CS344, but I reminded him that fast food like Rally\'s Spicy Chicken Sandwhiches can cuase High Blood Pressure as Well.  He started Crying.', 1),
-(4, '2022-03-09', '12:30:00', 0, 0, '', 4),
-(5, '2023-05-03', '12:30:00', 0, 0, '', 5);
+(4, '2022-03-09', '12:30:00', 0, 0, NULL, 4),
+(5, '2023-05-03', '12:30:00', 0, 0, NULL, 5);
 
 -- --------------------------------------------------------
 
