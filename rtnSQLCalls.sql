@@ -75,8 +75,7 @@ SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'La
 FROM Consultations co
 LEFT JOIN Clients cl
 USING (client_id)
-WHERE paid = 0
-  AND DATE_SUB(CURDATE(), INTERVAL $dayRange DAY) > DATEDIFF(CURDATE(), date);
+WHERE paid = 0;
 
 /*Get Client Invoices*/
 SELECT fname AS 'First Name', lname AS 'Last Name', date AS 'Consultation Date', paid AS "Paid?", phone AS 'Phone Number', email AS 'Email Address'
@@ -464,5 +463,3 @@ USING (condition_id)
 LEFT JOIN Articles
 USING (article_id)
 WHERE article_id != $article_id OR article_id IS NULL;
-
-

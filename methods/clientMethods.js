@@ -207,33 +207,27 @@ function updateClientRecords(data, pool, res) {
     });
 };
 
-function unpaidInvoices(data) {
-  //log data fro debug
-  console.log(data);
-  title = "Unpaid Invoices";
+function unpaidInvoices(pool, res) {
+  //Database Call logic
+  pool.query(
+    "SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', completed AS 'Completed', paid AS 'Paid?'\
+    FROM Consultations co\
+    LEFT JOIN Clients cl\
+    USING (client_id)\
+    WHERE paid = 0;")
+    .then( response => {
+      console.log(response);
+      let returnData = {};
+      let dat = databaseMethods.singleRecord(response, "Unpaid Invoices");
+      returnData.record = [dat];
+      res.render('read', returnData);
+    })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Add Client failed with error: " + err);
+      res.render('failure');
+    });
 
-  //Database call logic
-
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data =
-    [
-      {"consutation_id" : 123123, "first name": "Calvin", "last namne": "Todd", "date": "July 1, 2011", "email": "toddcal@oregonstate.edu", "completed" : true, "paid" : false},
-      {"consutation_id" : 152656, "first name": "Michelle", "last namne": "Gomez", "date": "August 20, 1969", "email": "MishSquish@notreal.com", "completed" : true, "paid" : false}
-    ];
-
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
-  }
-
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, data]
+  pool.release;
 }
 
 function clientInvoices(data) {
@@ -242,6 +236,7 @@ function clientInvoices(data) {
   title = "Client Invoices";
 
   //Database call logic
+
 
   //Logic to check if there are multiple records returned
 

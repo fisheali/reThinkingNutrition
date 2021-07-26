@@ -90,7 +90,7 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'View open (unpaid) invoices',
-                      input: '<form action="/unpaidInvoices"><label for="open_invoice">View open invoices from the last: <select name="time_frame" id="time_frame"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select><input type="submit" value="Submit"></form>'}]},
+                      input: '<form action="/unpaidInvoices"><input type="submit" value="View"></form>'}]},
 
                       {action: [
                       {question: 'Retrieve a client\'s invoice',
@@ -301,13 +301,7 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/unpaidInvoices', function(req, res) {
-    invoices = clientMethods.unpaidInvoices(req.query);
-    if (invoices[0]) {
-      res.render('read', invoices[1]);
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    clientMethods.unpaidInvoices(pool, res);
   });
 
   app.get('/clientInvoices', function(req, res) {
