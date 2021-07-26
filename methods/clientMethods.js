@@ -358,3 +358,5 @@ exports.updateClientRecords = updateClientRecords;
 exports.unpaidInvoices = unpaidInvoices;
 exports.clientInvoices = clientInvoices;
 exports.deleteClient = deleteClient;
+exports.viewAllClients = viewAllClients;
+
