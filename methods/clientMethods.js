@@ -4,7 +4,7 @@ function viewAllClients(data, pool, res) {
   console.log('inside viewAllClients method');
   //Database Call logic
   pool.query(
-    "SELECT fname, lname, phone, email, address, city from Clients")
+    "SELECT * from Clients")
     .then( response => {
       console.log(response);    //Confirmation console logging for debug
       let returnData = {};
