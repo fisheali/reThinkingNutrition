@@ -1,5 +1,32 @@
 var databaseMethods = require('../methods/databaseMethods.js');
 
+function viewAllClients(data, pool, res) {
+  console.log('inside viewAllClients method');
+  //Database Call logic
+  pool.query(
+    "SELECT fname, lname, phone, email, address, city from Clients")
+    .then( response => {
+      console.log(response);    //Confirmation console logging for debug
+      let returnData = {};
+      let list = [];
+      for(var i=0; i<response.length; i++)
+      {
+        list.push(response[i]);
+      }
+      returnData.response = list;
+      res.render('viewallclients', returnData);                                    
+    })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Add Client failed with error: " + err);
+    });
+
+  pool.release;
+
+  //Return failure or success
+  return true;
+};
+
+
 function addClient(data, pool) {
   //Database Call logic
   pool.query(
