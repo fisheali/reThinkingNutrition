@@ -83,14 +83,9 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'Update a client record',
-                      input: '<form action="/updateClientRecords"><label for="old_first_name">First Name of Client to Update: </label><input required type="text" id="old_first_name" name="old_first_name" placeholder="first name to update"><br>\
-                      <label for="old_last_name">Last Name of Client to Update: </label><input required type="text" id="old_last_name" name="old_last_name" placeholder="last name to update"><br><br>\
-                      <label for="update_client_fname">Updated First Name: </label><input type="text" id="updated_client_fname" name="updated_client_fname" placeholder="updated first Nnme"><br>\
-                      <label for="update_client_lname">Updated Last Name: </label><input type="text" id="updated_client_lname" name="updated_client_lname" placeholder="updated last name"><br>\
-                      <label for="update_client_phone">Updated Phone Number: </label><input type="tel" id="updated_client_phone" name="updated_client_phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="updated xxx-xxx-xxxx"><br>\
-                      <label for="update_client_email">Updated Email: </label><input type="email" id="updated_client_email" name="updated_client_email" placeholder="updated email@example.com"><br>\
-                      <label for="update_client_street">Updated Street Address: </label><input type="text" id="updated_client_street" name="updated_client_street" placeholder="updated 1234 Example St."><br>\
-                      <label for="update_client_city">Updated City: </label><input type="text" id="updated_client_city" name="updated_client_city" placeholder="updated city"><br>\
+                      input: '<form action="/updateClientRecords"><label for="fname">First Name of Client to Update: </label><input required type="text" id="fname" name="fname" placeholder="first name to update"><br>\
+                      <label for="lname">Last Name of Client to Update: </label><input required type="text" id="lname" name="lname" placeholder="last name to update"><br>\
+                      <input type="hidden" id="client_id" name="client_id" value="">\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
@@ -111,10 +106,9 @@ app.get('/clients', function (req, res) {
                       <input type="submit" value="Submit" onclick="return confirm("Are you sure you want to delete this item?");"></form>'}]},
 
                       {action: [
-                        {question: 'View all clients',
-                        input: '<form action="viewAllClients"><label for="all_clients">View all clients (update | delete): </label><br>\
-                        <input type="submit" value="Submit"</form>'}]}
-
+                      {question: 'View All Clients',
+                      input: '<form action="/viewAllClients">\
+                      <input type="submit" value="Submit""></form>'}]}
           ]}
      );
 });
@@ -282,30 +276,16 @@ app.get('/articles', function (req, res) {
     }
   });
 
+  app.get('/viewAllClients', function(req, res) {
+    console.log('GET HERE')
+  });
+
   app.get('/clientRecords', function(req, res) {
     records = clientMethods.clientRecords(req.query, pool, res);
-    // if (records[0]) {
-    //   if (records[1]) {
-    //     res.render('choices', records[2]);
-    //   }
-    //   res.render('read', records[2]);
-    // }
-    // else {
-    //   res.render('failure', req.query);
-    // }
   });
 
   app.get('/updateClientRecords', function(req, res) {
-    records = clientMethods.updateClientRecords(req.query);
-    if (records[0]) {
-      if (records[1]) {
-        //Logice for multiple records
-      }
-      res.render('success', {title: "Update Client Records", values: Object.values(records[2].values[0])});
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    clientMethods.updateClientRecords(req.query, pool, res);
   });
 
   app.get('/addRemoveClientCond', function(req, res) {
