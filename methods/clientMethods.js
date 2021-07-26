@@ -14,7 +14,7 @@ function viewAllClients(data, pool, res) {
         list.push(response[i]);
       }
       returnData.response = list;
-      res.render('viewallclients', returnData);                                    
+      res.render('viewallclients', returnData);
     })
     .catch( err => {                                                   //Error Catching
       console.log("FAILED: Add Client failed with error: " + err);
@@ -257,34 +257,64 @@ function unpaidInvoices(pool, res) {
   pool.release;
 }
 
-function clientInvoices(data) {
+function clientInvoices(data, pool, res) {
   //log data fro debug
   console.log(data);
   title = "Client Invoices";
+  action="/clientInvoices"
 
   //Database call logic
+  //First call to check # of name Records
+  sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
+  FROM Clients cl\
+  WHERE (fname = ?\
+    AND lname = ?)\
+    OR (client_id = ?);";
 
-
+  pool.query(
+      sqlQuery,
+      Object.values(data)
+    )
   //Logic to check if there are multiple records returned
+    .then( response => {
+      if (response.length > 1) {
+        returnData = databaseMethods.multipleNameRecords(response, action, data);
+        console.log(returnData);
+        res.render('choices', returnData);
+      }
+      else
+      {
+        sqlQuery = "SELECT fname AS 'First Name', lname AS 'Last Name', date AS 'Consultation Date', paid AS 'Paid?', phone AS 'Phone Number', email AS 'Email Address'\
+        FROM Consultations co\
+        LEFT JOIN Clients cl\
+        USING (client_id)\
+        WHERE (fname = ?\
+          AND lname = ?)\
+          OR (client_id = ?);", Object.values(data);
 
-  //placeholder data
-  sql_data =
-    [
-      {"first name": "Calvin", "last namne": "Todd", "date": "May 3, 1988", "completed": false, "paid" : true},
-      {"first name": "Calvin", "last namne": "Todd", "date": "January 20, 1993", "completed": true, "paid" : false}
-    ];
-
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
-  }
-
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
+        pool.query(
+            sqlQuery,
+            Object.values(data)
+          )
+          .then( response => {
+            if (response.length < 1) {
+              res.render('form', {title : 'No Matching Records'});
+            }
+            let returnData = {};
+            let dat = databaseMethods.singleRecord(response, "Unpaid Invoices");
+            returnData.record = [dat];
+            res.render('read', returnData);
+          })
+          .catch( err => {                                                   //Error Catching
+            console.log("FAILED: Client Invoices failed with error: " + err);
+            res.render('failure');
+          })
+        }
+      })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Client Invoices failed with error: " + err);
+      res.render('failure');
+  });
 }
 
 function deleteClient(data) {
@@ -354,4 +384,3 @@ exports.unpaidInvoices = unpaidInvoices;
 exports.clientInvoices = clientInvoices;
 exports.deleteClient = deleteClient;
 exports.viewAllClients = viewAllClients;
-

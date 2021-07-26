@@ -94,8 +94,9 @@ app.get('/clients', function (req, res) {
 
                       {action: [
                       {question: 'Retrieve a client\'s invoice',
-                      input: '<form action="/clientInvoices"><label for="invoice_client_fname">First Name: </label><input required type="text" id="invoice_client_fname" name="client_fname" placeholder="First Name"><br>\
-                      <label for="invoice_client_lname">Last Name: </label><input required type="text" id="invoice_client_lname" name="client_lname" placeholder="Last Name"><br>\
+                      input: '<form action="/clientInvoices"><label for="fname">First Name: </label><input required type="text" id="fname" name="fname" placeholder="First Name"><br>\
+                      <label for="lname">Last Name: </label><input required type="text" id="lname" name="lname" placeholder="Last Name"><br>\
+                      <input type="hidden" id="client_id" name="client_id" value="">\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
@@ -278,7 +279,7 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/viewAllClients', function(req, res) {
-    clientMethods.viewAllClients(req.query, pool, res);   
+    clientMethods.viewAllClients(req.query, pool, res);
   });
 
   app.get('/clientRecords', function(req, res) {
@@ -306,16 +307,7 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/clientInvoices', function(req, res) {
-    records = clientMethods.clientInvoices(req.query);
-    if (records[0]) {
-      if (records[1]) {
-        //Logice for multiple records
-      }
-      res.render('read', records[2]);
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    clientMethods.clientInvoices(req.query, pool, res);
   });
 
   app.get('/deleteClient', function(req, res) {
