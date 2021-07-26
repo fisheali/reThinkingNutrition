@@ -6,7 +6,7 @@ Assignment: Assignment 4 - Data Manipulation Queries
 
 /*
 Notes:
-All user passed variable will use a $ before the variable.  $example.
+All user passed variables will use a $ before the variable.  $example.
 There will be some hidden variables passed as well, will annotate with $$. $$example.
 Will provide comments in code for clarity
 */
@@ -22,7 +22,7 @@ SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', ph
 FROM Clients cl
 WHERE ($firstname = fname
   AND $lastname = lname)
-  OR ($$clinet_id = client_id);
+  OR ($$client_id = client_id);
 
 /*The OR Client_id will be used if the query returns multiple records the first query in
 case two people with the same name are in the DB.  A lot of this will be handled
@@ -39,18 +39,11 @@ This is the same in all methods in this section*/
     OR (client_id = $$client_id);
 
 /*IF Articles flag*/
-SELECT article_id AS 'Article ID', date_recommended AS 'Date Reccomended', title AS 'Title', publish_date AS 'Publish Date', publication AS 'Publication', author AS 'Author', website AS 'Website'
-FROM Clients cl
-JOIN Clients_Articles ca
-USING (client_id)
-JOIN Articles a
-USING (article_id)
-WHERE (fname = $firstname
-  AND lname = $lastname)
-  OR (client_id = $$client_id);
+SELECT article_id AS 'Article ID', date_recommended AS 'Date Recommended', title AS 'Title', publish_date AS 'Publish Date', publication AS 'Publication', author AS 'Author', website AS 'Website' FROM Clients cl JOIN Clients_Articles ca USING (client_id) JOIN Articles a USING (article_id) WHERE (fname = $firstname   AND lname = $lastname)   OR (client_id = $$client_id);
+
 
 /*If Supplements flag*/
-SELECT supplement_id AS 'Supplement ID', date_recommended AS 'Date Reccomended', type AS 'Type', brand_name AS 'Brand'
+SELECT supplement_id AS 'Supplement ID', date_recommended AS 'Date Recommended', type AS 'Type', brand_name AS 'Brand'
 FROM Clients cl
 JOIN Clients_Supplements cs
 USING (client_id)
@@ -95,7 +88,7 @@ WHERE (fname = $firstname
   OR (client_id = $$client_id);
 
 /*Remove a Client*/
-/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+/*Get List for data validation in case there are multiple clients with the same first/last name*/
 SELECT *
 FROM Clients cl
 WHERE (fname = $fname
@@ -111,7 +104,7 @@ WHERE (fname = $firstname
   /*Consultations Section*/
 
 /*Add a Consultation*/
-/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+/*Get List for data validation in case there are multiple clients with the same first/last name*/
 SELECT *
 FROM Clients cl
 WHERE (fname = $fname
@@ -123,7 +116,7 @@ VALUES ($date, $time, $client_id);
 
 /*View Upcoming Consultations*/
 /*Specific Client*/
-/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+/*Get List for data validation in case there are multiple clients with the same first/last name*/
 SELECT *
 FROM Clients cl
 WHERE (fname = $fname
@@ -147,7 +140,7 @@ WHERE DATEDIFF(DATE_ADD(CURDATE(), INTERVAL $dayRange DAY), date) >= 0
 AND date > CURDATE();
 
 /*Update a Consultation*/
-/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+/*Get List for data validation in case there are multiple clients with the same first/last name*/
 SELECT *
 FROM Clients cl
 LEFT JOIN Consultations co
@@ -175,8 +168,8 @@ WHERE (fname = $firstname
   AND lname = $lastname)
   OR (consultation_id = $$consultation_id);
 
-/*Add/Remove Client COndition */
-/*Get List for data validation in case there are multiple clients witht he same first/last name*/
+/*Add/Remove Client Condition */
+/*Get List for data validation in case there are multiple clients with the same first/last name*/
 SELECT *
 FROM Clients cl
 WHERE (fname = $fname
@@ -193,7 +186,7 @@ FROM Clients_Conditions
 WHERE client_id = $$client_id
 AND (SELECT condition_id FROM Condtions WHERE condition_name = $condition_name));
 
-/*Add reccomendation for Client*/
+/*Add recommendation for Client*/
 /*Check for duplicate name records*/
 SELECT *
 FROM Clients cl
@@ -201,7 +194,7 @@ WHERE (fname = $fname
   AND lname = $lname)
   OR (client_id = $$client_id);
 
-/*Get reccomendations based on Conditions and Supplement IF supplement flag*/
+/*Get recommendations based on Conditions and Supplement IF supplement flag*/
 SELECT co.condition_name AS 'Condition Name', type AS 'Type', brand_name AS 'Brand'
 FROM Conditions co
 JOIN Conditions_Supplements cs
@@ -224,7 +217,7 @@ LEFT JOIN Brands b
 ON (css.brand_id = b.brand_id)
 WHERE (condition_id = $condition_id);
 
-/*Get reccomendations based on Conditions and Articles IF article flag*/
+/*Get recommendations based on Conditions and Articles IF article flag*/
 SELECT condition_name AS 'Condition Name', title AS 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website'
 FROM Conditions co
 JOIN Conditions_Articles ca
@@ -245,14 +238,14 @@ JOIN
 ON (ca.article_id = asz.article_id)
 WHERE (condition_id = $condition_id);
 
-/*Add Reccomendations based on Selections*/
+/*Add Recommendations based on Selections*/
 INSERT INTO Clients_Articles (date_recommended, client_id, article_id)
 VALUES $(CURDATE(), $client_id, $article_id); --Populate number of queries based on selection choice handled in JS
 
 INSERT INTO Clients_Supplements (date_recommended, client_id, supplement_id)
 VALUES $(CURDATE(), $client_id, $supplement_id); --Populate number of queries based on selection choice handled in JS
 
-/*View Reccomendations*/
+/*View Recommendations*/
 /*Check for duplicate name records*/
 SELECT *
 FROM Clients cl
@@ -261,7 +254,7 @@ WHERE (fname = $fname
   OR (client_id = $$client_id);
 
 /*Table pull for article recommendations*/
-SELECT fname AS 'First Name', lname AS 'Last Name', article_id as 'Article ID', date_recommended AS 'Date Reccomended', title AS 'Title', author AS 'Author', publication AS 'Publication', website as 'Website'
+SELECT fname AS 'First Name', lname AS 'Last Name', article_id as 'Article ID', date_recommended AS 'Date Recommended', title AS 'Title', author AS 'Author', publication AS 'Publication', website as 'Website'
 FROM Clients c
 JOIN Clients_Articles ca
 USING (client_id)
@@ -269,8 +262,8 @@ JOIN Articles a
 USING (article_id)
 WHERE client_id = $client_id;
 
-/*Table pull for Supplement Reccomendations*/
-SELECT fname AS 'First Name', lname AS 'Last Name', supplement_id as 'Supplement ID', date_recommended AS 'Date Reccomended', type AS 'Type', brand_name AS 'Brand'
+/*Table pull for Supplement Recommendations*/
+SELECT fname AS 'First Name', lname AS 'Last Name', supplement_id as 'Supplement ID', date_recommended AS 'Date Recommended', type AS 'Type', brand_name AS 'Brand'
 FROM Clients c
 USING (client_id)
 JOIN Supplements s
@@ -279,7 +272,7 @@ LEFT JOIN Brands b
 USING (brand_id)
 WHERE client_id = $client_id;
 
-/*Article Data Base Queries*/
+/*Article Database Queries*/
 /*Add Article*/
 INSERT INTO Articles (title, author, publication, date, website)
 VALUES ($title, $author, $publication, $date, $website)
@@ -319,7 +312,7 @@ WHERE supplement_id = $supplement_id;
 /*Filter Articles to Update by Title, attempting to implement pattern searching*/
 Select title as 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website', publish_date AS 'Publish Date'
 FROM Articles
-WHERE (title = $title) OR (title LIKE '%$firstTitleWord% %$lastTitleWord%');  --Use LIKE and pattern mathcing with JS variables to get similiar names
+WHERE (title = $title) OR (title LIKE '%$firstTitleWord% %$lastTitleWord%');  --Use LIKE and pattern matching with JS variables to get similiar names
 
 UPDATE Articles
 SET (title = $title, publish_date = $publish_date, publication = $publication, author = $author, website = $website)
@@ -355,7 +348,7 @@ FROM Supplements_Articles sa
 WHERE supplement_id = $supplement_id AND article_id = $article_id;
 
 /*Remove an Article from the Library*/
-/*Check to see if Article exists, andle multiple data*/
+/*Check to see if Article exists, handle multiple data*/
 SELECT article_id
 FROM Articles
 WHERE (title = $title) OR (title LIKE '%$firstTitleWord% %$lastTitleWord%');
@@ -421,7 +414,7 @@ DELETE
 FROM Brands
 WHERE brand_id = $brand_id;
 
-/*Condtion Data Queries*/
+/*Condition Data Queries*/
 /*Add Condition for Treatment*/
 INSERT INTO Conditions (condition_name)
 VALUES ($condition_name);
@@ -431,7 +424,7 @@ SELECT *
 FROM Conditions;
 
 /*Update a Condition*/
-UPDATE Condtions
+UPDATE Conditions
 SET (condition_name = $condition_name)
 WHERE condition_id = $condition_id;
 
@@ -441,7 +434,7 @@ FROM Conditions
 WHERE condition_id = $condition_id;
 
 /*Other Data Queries*/
-/*Dynamically Get List of Conditions Excluding Ones with supp treatement reltationship*/
+/*Dynamically Get List of Conditions Excluding Ones with supp treatment relationship*/
 SELECT condition_id, condition_name
 FROM Conditions
 LEFT JOIN Conditions_Supplements
@@ -450,7 +443,7 @@ LEFT JOIN Supplements
 USING (supplement_id)
 WHERE supplement_id != $supplement_id OR supplement_id IS NULL;
 
-/*Dynamically Get List of Conditions associated with supp treatement reltationship*/
+/*Dynamically Get List of Conditions associated with supp treatment relationship*/
 SELECT condition_id, condition_name
 FROM Conditions
 JOIN Conditions_Supplements
@@ -463,7 +456,7 @@ WHERE supplement_id = $supplement_id;
 SELECT condition_id, condition_name
 FROM Conditions;
 
-/*Dynamically Get List of Conditions Excluding Ones with article reltationship*/
+/*Dynamically Get List of Conditions Excluding Ones with article relationship*/
 SELECT condition_id, condition_name
 FROM Conditions
 LEFT JOIN Conditions_Articles
@@ -471,3 +464,5 @@ USING (condition_id)
 LEFT JOIN Articles
 USING (article_id)
 WHERE article_id != $article_id OR article_id IS NULL;
+
+
