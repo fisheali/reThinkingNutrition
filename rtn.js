@@ -42,18 +42,8 @@ app.get('/conditions', function (req, res) {
 
                       {action: [
                         {question: 'View all conditions',
-                        input: '<form action="/getCondtions"><input type="submit" value="Submit"></form>'}]},
-
-                      {action: [
-                        {question: 'Update a condition',
-                        input: '<form action="/updateCondition"><label for="old_cond">Update the following condition: </label><select required class="cond_list" name="old_cond"></select><br>\
-                        <label for="new_cond">Updated condition </label><input required type="text" id="new_cond" name="new_cond" placeholder="updated condition name"><br>\
-                        <input type="submit" value="Submit"></form>'}]},
-
-                      {action: [
-                      {question: 'Remove a condition from treatment',
-                      input: '<form action="removeCondition"><label for="remove_cond">Remove the condition </label><select required class="cond_list" name="remove_cond"></select><input type="submit" value="Submit"></form>'}]}
-       ]}
+                        input: '<form action="/getConditions">View all conditions: Update | Delete <input type="submit" value="Submit"></form>'}]}
+        ]}
     );
 });
 
@@ -547,13 +537,7 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/getConditions', function(req, res) {
-    data = conditionMethods.getConditions(req.query);
-    if (data[0]) {
-      res.render('read', data[1]);
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    conditionMethods.getConditions(req.query, pool, res);  
   });
 
 app.listen(app.get('port'), function(){
