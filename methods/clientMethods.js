@@ -130,19 +130,19 @@ function clientRecords(data, pool, res) {
         let dat = databaseMethods.singleRecord(response[i], 'Client Records');
         returnData.record = [dat];
         i = i + 1;
-        if (data.consultations && data.consultations != "0" && response[i].length == 1)
+        if (data.consultations && data.consultations != "0" && response[i].length > 0)
         {
           let condata = databaseMethods.singleRecord(response[i], 'Consultations');
           returnData.consultations = [condata];
           i = i + 1;
         }
-        if (data.supplements && data.supplements != "0" && response[i].length == 1)
+        if (data.supplements && data.supplements != "0" && response[i].length > 0)
         {
           let suppData = databaseMethods.singleRecord(response[i], 'Supplements');
           returnData.supplements = [suppData];
           i = i + 1;
         }
-        if (data.articles && data.articles != "0" && response[i].length == 1)
+        if (data.articles && data.articles != "0" && response[i].length > 0)
         {
           let artData = databaseMethods.singleRecord(response[i], 'Articles');
           returnData.articles = [artData];
@@ -317,34 +317,58 @@ function clientInvoices(data, pool, res) {
   });
 }
 
-function deleteClient(data) {
+function deleteClient(data, pool, res) {
   //log data fro debug
   console.log(data);
   title = "Remove Client";
+  action="/deleteClient"
 
   //Database call logic
+  //First call to check # of name Records
+  sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
+  FROM Clients cl\
+  WHERE (fname = ?\
+    AND lname = ?)\
+    OR (client_id = ?);";
 
+  pool.query(
+      sqlQuery,
+      Object.values(data)
+    )
   //Logic to check if there are multiple records returned
+    .then( response => {
+      if (response.length > 1) {
+        returnData = databaseMethods.multipleNameRecords(response, action, data);
+        console.log(returnData);
+        res.render('choices', returnData);
+      }
+      else
+      {
+        sqlQuery = "DELETE\
+        FROM Clients\
+        WHERE (fname = ?\
+          AND lname = ?)\
+          OR (client_id = ?);";
 
-  //placeholder data
-  sql_data =
-  [
-    {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "address": "220 Evergreen", "city": "Imperial Beach"},
-    {"first name": "Michelle", "last namne": "Gomez", "phone": "1800AWESOME", "email": "MishSquish@notreal.com", "address": "220 Evergreen", "city": "Tiajuana"}
-  ];
-
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+        pool.query(
+            sqlQuery,
+            Object.values(data)
+          )
+          .then( response => {
+            res.render('success');
+          })
+          .catch( err => {                                                   //Error Catching
+            console.log("FAILED: Delete Client failed with error: " + err);
+            res.render('failure');
+          })
+        }
+      })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Delete Client failed with error: " + err);
+      res.render('failure');
+  });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
-}
 
 function addRemoveClientCond(data) {
   //log data fro debug

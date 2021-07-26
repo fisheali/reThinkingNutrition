@@ -102,8 +102,9 @@ app.get('/clients', function (req, res) {
                       {action: [
                       {question: 'Remove a client',
                       input: '<form action="deleteClient"><label for="client_remove">Remove the following client: </label><br>\
-                      <label for="remove_client_fname">First Name: </label><input required type="text" id="remove_client_fname" name="client_fname" placeholder="First Name"><br>\
-                      <label for="remove_client_lname">Last Name: </label><input required type="text" id="remove_client_lname" name="client_lname" placeholder="Last Name"><br>\
+                      <label for="fname">First Name: </label><input required type="text" id="fname" name="fname" placeholder="First Name"><br>\
+                      <label for="rlname">Last Name: </label><input required type="text" id="lname" name="lname" placeholder="Last Name"><br>\
+                      <input type="hidden" id="client_id" name="client_id" value="">\
                       <input type="submit" value="Submit" onclick="return confirm("Are you sure you want to delete this item?");"></form>'}]},
 
                       {action: [
@@ -311,16 +312,8 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/deleteClient', function(req, res) {
-    //if (check for multiple records and Confirmation )
-    //else
-    deleted = clientMethods.deleteClient(req.query);
-    if (deleted) {
-      res.render('success', {title : "Deleted Client", values : Object.values(deleted[2].values[0])});
-    }
-    else {
-      res.render('failure', req.query);
-    }
-  })
+    clientMethods.deleteClient(req.query, pool, res);
+  });
 
   app.get('/addConsultation', function(req, res) {
     success = consultationMethods.addConsultation(req.query);
