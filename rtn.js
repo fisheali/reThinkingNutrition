@@ -108,6 +108,7 @@ app.get('/clients', function (req, res) {
                       {action: [
                       {question: 'View All Clients',
                       input: '<form action="/viewAllClients">\
+                      View all clients: Update | Delete\
                       <input type="submit" value="Submit""></form>'}]}
           ]}
      );
@@ -277,7 +278,7 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/viewAllClients', function(req, res) {
-    console.log('GET HERE')
+    clientMethods.viewAllClients(req.query, pool, res);   
   });
 
   app.get('/clientRecords', function(req, res) {
