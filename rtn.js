@@ -121,19 +121,21 @@ app.get('/consultations', function (req, res) {
                       {action: [
                       {question: 'Add a new consultation',
                       input: '<form action="/addConsultation"><label for="add_consultation">Add a consultation with </label><br>\
-                      <label for="add_consultation_client_fname">First Name: </label><input required type="text" id="add_consultation_client_fname" name="client_fname" placeholder="First Name"><br>\
-                      <label for="add_consultation_client_lname">Last Name: </label><input required type="text" id="add_consultation_client_lname" name="client_lname" placeholder="Last Name"><br>\
-                      <label for="consultation_date">on </label><input required type="date" id="consultation_date" name="consultation_date"><br>\
-                      <label for="consultation_time">at </label><input type="time" id="consultation_time" name="consultation_time"><br>\
+                      <label for="fname">First Name: </label><input required type="text" id="fname" name="client_fname" placeholder="First Name"><br>\
+                      <label for="lname">Last Name: </label><input required type="text" id="lname" name="lname" placeholder="Last Name"><br>\
+                      <label for="date">on </label><input required type="date" id="date" name="date"><br>\
+                      <label for="time">at </label><input type="time" id="time" name="time"><br>\
+                      <input type="hidden" id="client_id" name="client_id" value="">\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
                       {question: 'View my upcoming consultations',
                       input: '<form action="/upcomingConsultations"><label for="radio_client">View consultations for: <br><br></label><input type="radio" name="radio_client" id="radio_client_single" value="specific_client"><label for="radio_client_single">A specific client: </label><br>\
-                      <label for="view_consultation_client_fname">First Name: </label><input required type="text" id="view_consultation_client_fname" name="client_fname" placeholder="First Name"><br>\
-                      <label for="view_consultation_client_lname">Last Name: </label><input required type="text" id="view_consultation_client_lname" name="client_lname" placeholder="Last Name"><br><br>\
+                      <label for="fname">First Name: </label><input type="text" id="fname" name="fname" placeholder="First Name"><br>\
+                      <label for="lname">Last Name: </label><input type="text" id="lname" name="lname" placeholder="Last Name"><br><br>\
                       <input required type="radio" name="radio_client" id="radio_client_all" value="all_clients"><label for="radio_client_all">All clients </label><br>\
-                      in the next <select name="time_frame" id="time_frame_consultation"><option value="2_weeks">2 Weeks</option><option value="1 Month">1 Month</option><option value="all_time">All Time</option></select>\
+                      in the next <select name="time_frame" id="time_frame_consultation"><option value="2_weeks">2 Weeks</option><option value="1_month">1 Month</option><option value="all_time">All Time</option></select>\
+                      <input type="hidden" id="client_id" name="client_id" value="">\
                       <input type="submit" value="Submit"></form>'}]},
 
                       {action: [
@@ -316,23 +318,11 @@ app.get('/articles', function (req, res) {
   });
 
   app.get('/addConsultation', function(req, res) {
-    success = consultationMethods.addConsultation(req.query);
-    if (success) {
-      res.render('success', { title: "Consultation", values: Object.values(req.query) }) ;
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    consultationMethods.addConsultation(req.query, pool, res);
   })
 
   app.get('/upcomingConsultations', function(req, res) {
-    consultations = consultationMethods.upcomingConsultations(req.query);
-    if (consultations[0]) {
-      res.render('read', consultations[1]);
-    }
-    else {
-      res.render('failure', req.query);
-    }
+    consultationMethods.upcomingConsultations(req.query, pool, res);
   });
 
   app.get('/updateConsultation', function(req, res) {

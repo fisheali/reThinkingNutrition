@@ -1,50 +1,135 @@
-function addConsultation(data) {
-  //log data for debug
-  console.log(data);
+var databaseMethods = require('../methods/databaseMethods.js');
 
-  //Database Call logic
+function addConsultation(data, pool, res) {
+  action = '/addConsultation'
+  //First call to check # of name Records
+  sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
+  FROM Clients cl\
+  WHERE (fname = ?\
+    AND lname = ?)\
+    OR (client_id = ?);";
 
-  //Return failure or success
-  return true;
+  pool.query(
+      sqlQuery,
+      Object.values(data)
+    )
+  //Logic to check if there are multiple records returned
+    .then( response => {
+      if (response.length > 1) {
+        returnData = databaseMethods.multipleNameRecords(response, action, data);
+        res.render('choices', returnData);
+      }
+      else
+      {
+        sqlQuery = "INSERT INTO Consultations (date, time, client_id)\
+        VALUES (?, ?, ?);";
+        pool.query(
+            sqlQuery,
+            [data.date, data.time, data.client_id]
+          )
+          .then( response => {
+            res.render('success');
+          })
+          .catch( err => {                                                   //Error Catching
+            console.log("FAILED: Add Consultation failed with error: " + err);
+            res.render('failure');
+          })
+        }
+      })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Add Consultation failed with error: " + err);
+      res.render('failure');
+  });
 };
 
-function upcomingConsultations(data) {
+function upcomingConsultations(data, pool, res) {
   //log data fro debug
   console.log(data);
   title = "Upcoming Consultations";
+  action = '/upcomingConsultations'
+  //First call to check # of name Records
+  sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
+  FROM Clients cl\
+  WHERE (fname = ?\
+    AND lname = ?)\
+    OR (client_id = ?);";
 
-  //Database call logic
-
+  pool.query(
+      sqlQuery,
+      [data.fname, data.lname, data.client_id]
+    )
   //Logic to check if there are multiple records returned
+    .then( response => {
+      if (response.length > 1) {
+        returnData = databaseMethods.multipleNameRecords(response, action, data);
+        res.render('choices', returnData);
+      }
+      else {
+        //Build SQL Call based on inputs
+        sqlQuery = "SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time'\
+        FROM Consultations\
+        LEFT JOIN Clients\
+        USING (client_id)\
+        WHERE "
 
-  //placeholder data
-  if (data.radio_client == 'all_clients')
-  {
-    sql_data =
-      [
-        {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "date": "May 3, 1988"},
-        {"first name": "Michelle", "last namne": "Gomez", "phone": "1800AWESOME", "email": "MishSquish@notreal.com", "date": "may 4, 1989"}
-      ];
-  }
-  else {
-    sql_data =
-      [
-        {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "date": "May 3, 1988"},
-        {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "date": "may 4, 1989"}
-      ];
-  }
+        if (data.time_frame != 'all_time')
+        {
+          var timeFrame
+          if (data.time_frame == '2_weeks'){
+            timeFrame = '14';
+          }
+          else {
+            timeFrame = '30';
+          }
+          sqlQuery = sqlQuery + "DATEDIFF(DATE_ADD(CURDATE(), INTERVAL + " + timeFrame + " DAY), date) >= 0\
+          AND ";
+        }
 
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
-  }
+        sqlQuery = sqlQuery + "date > CURDATE()"
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, data]
+        if (data.radio_client == 'specific_client')
+        {
+          sqlQuery = sqlQuery + " AND client_id = ?;";
+          pool.query(
+            sqlQuery,
+            [data.client_id]
+          )
+          .then( response => {
+            console.log(response);
+            let returnData = {};
+            let dat = databaseMethods.singleRecord(response, title);
+            returnData.record = [dat];
+            res.render('read', returnData);
+          })
+          .catch( err => {                                                   //Error Catching
+            console.log("FAILED: View Upcoming Consultations failed with error: " + err);
+            res.render('failure');
+          });
+        }
+        else
+        {
+          sqlQuery = sqlQuery + ";";
+          pool.query(
+            sqlQuery
+          )
+          .then( response => {
+            console.log(response);
+            let returnData = {};
+            let dat = databaseMethods.singleRecord(response, title);
+            returnData.record = [dat];
+            res.render('read', returnData);
+          })
+          .catch( err => {                                                   //Error Catching
+            console.log("FAILED: View Upcoming Consultations failed with error: " + err);
+            res.render('failure');
+          });
+        }
+      }
+    })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: View Upcoming Consultations failed with error: " + err);
+      res.render('failure');
+  });
 }
 
 function updateConsultation(data) {

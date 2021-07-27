@@ -21,7 +21,8 @@ function multipleNameRecords (res, action, data) {
       }
       returnData = {name : res[0]['First Name'] + " " + res[0]['Last Name'],
        keys : Object.keys(res[0]), values : val, consultations : 0,
-      action : action, supplements : 0, articles : 0};
+      action : action, supplements : 0, articles : 0, date: 0, time: 0,
+      time_frame : 0, radio_client : 0};
 
       if (data["consultations"]) {
         let consulData = data["consultations"];
@@ -37,7 +38,27 @@ function multipleNameRecords (res, action, data) {
         let articleData = data["articles"];
         returnData.articles = articleData;
       }
-      
+
+      if (data["date"]) {
+        let dateData = data["date"];
+        returnData.date = dateData;
+      }
+
+      if (data["time"]) {
+        let timeData = data["time"];
+        returnData.time = timeData;
+      }
+
+      if (data["time_frame"]) {
+        let timeFData = data["time_frame"];
+        returnData.time_frame = timeFData;
+      }
+
+      if (data["radio_client"]) {
+        let radioData = data["radio_client"];
+        returnData.radio_client = radioData;
+      }
+
       return returnData;
 };
 
