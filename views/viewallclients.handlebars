@@ -41,8 +41,8 @@
                 {{this.address}}
                  {{else}}                
                 {{/if}}</td>
-            <td><button onclick="deleteClient({{id}})">Delete</button></td>
-            <td><a href='/{{this.id}}'>Update</a></td>
+            <td><button><a href="/deleteClientFromTable/{{this.client_id}}">Delete</a></button></td>
+            <td><a href="/updateClientFromTable/{{this.client_id}}">Update</a></td>
         </tr>
         {{/each}}
     </tbody>
