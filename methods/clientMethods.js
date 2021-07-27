@@ -401,6 +401,60 @@ function addRemoveClientCond(data) {
 
 
 
+function deleteClientFromTable(id, pool, res){
+  title = "Remove Client From Table";
+  action="/deleteClientFromTable";
+  sqlQuery = "DELETE FROM Clients WHERE client_id = ?";
+  console.log('inside deleteClientFromTable and printing id', id);
+  pool.query(sqlQuery, id)
+    .then( response => {
+      res.render('success');
+    })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Delete Client From Table failed with error: " + err);
+      res.render('failure');
+    })
+  }
+
+
+function updateClientFromTable(id, pool, res){
+  title = "Update Client From Table";
+  action="/updateClientFromTable";
+  console.log('inside updateClientFromTable and printing id', id);
+  let sqlQuery = "SELECT * FROM Clients WHERE client_id = ?";
+
+  pool.query(sqlQuery, id)
+  .then( response => {
+    
+    let client = response[0];
+    console.log(client);
+    res.render('updateClientFromTable', client);
+  })
+  .catch( err => {                                                   //Error Catching
+    console.log("FAILED: Update Client From Table failed with error: " + err);
+    res.render('failure');
+  })
+}
+
+
+function updateClientFromTableDatabase(data, pool, res){
+  title = "Update Client From Table - Database";
+  action="/updateClientFromTableDatabase";
+
+let query = "UPDATE Clients SET fname=?, lname=?, phone=?, email=?, address=?, city=? WHERE client_id=?;";
+    let array = [data.fname, data.lname, data.phone, data.email, data.address, data.city, parseInt(data.client_id)];
+    pool.query(query, array)
+    .then( response => {
+      res.render('success');
+    })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Update Client From Table Database failed with error: " + err);
+      res.render('failure');
+    })
+  }
+
+
+
 exports.addClient = addClient;
 exports.clientRecords = clientRecords;
 exports.updateClientRecords = updateClientRecords;
@@ -408,3 +462,6 @@ exports.unpaidInvoices = unpaidInvoices;
 exports.clientInvoices = clientInvoices;
 exports.deleteClient = deleteClient;
 exports.viewAllClients = viewAllClients;
+exports.deleteClientFromTable = deleteClientFromTable;
+exports.updateClientFromTable = updateClientFromTable;
+exports.updateClientFromTableDatabase = updateClientFromTableDatabase;
