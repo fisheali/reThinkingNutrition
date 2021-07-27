@@ -13,6 +13,28 @@ function addCondition(data, pool, res) {
     });
 };
 
+function deleteConditionFromTable(id, pool, res){
+  title = "Remove Condition From Table";
+  action="/deleteConditionFromTable";
+  sqlQuery = "DELETE FROM Conditions WHERE condition_id = ?";
+  console.log('inside deleteConditionFromTable and printing id', id);
+  pool.query(sqlQuery, id)
+    .then( response => {
+      res.render('success');
+    })
+    .catch( err => {                                                   //Error Catching
+      console.log("FAILED: Delete Condition From Table failed with error: " + err);
+      res.render('failure');
+    })
+  }
+
+
+
+
+
+
+
+
 function getConditions(data, pool, res) {
   //log data for debug
   console.log('inside viewAllConditions method');
@@ -42,6 +64,5 @@ function getConditions(data, pool, res) {
 };
 
 exports.addCondition = addCondition;
-exports.updateCondition = updateCondition;
 exports.deleteConditionFromTable = deleteConditionFromTable;
 exports.getConditions = getConditions;
