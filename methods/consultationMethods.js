@@ -494,49 +494,6 @@ function viewRecommendations(data, pool, res) {
   })
 }
 
-function removeReccomendations(data, pool, res) {
-  //log data for debugging
-  title = "Remove Reccomendation";
-
-  //SQL call for recceomendations
-  if (data.choices == 'true') {
-    sql_data = [{
-      reccomendations: [{
-        "articles": ["art1 ", "art2", "art3"],
-        "supplements": ["supp1", "supp2", "supp3"]
-      }]
-    }];
-    data = {
-      title: title,
-      keys: Object.keys(sql_data[0].reccomendations[0]),
-      title: title,
-      articles: Object.values(sql_data[0].reccomendations[0].articles),
-      supplements: Object.values(sql_data[0].reccomendations[0].supplements),
-      choices: data.choices
-    };
-  } else {
-    sql_data = [data];
-    val = []
-    for (i = 0; i < sql_data.length; i++) {
-      val.push({
-        value: Object.values(sql_data[i])
-      });
-    }
-
-    data = {
-      keys: Object.keys(sql_data[0]),
-      title: title,
-      values: val,
-      choices: data.choices
-    };
-  }
-
-  //Data Format
-
-
-  //Return [bool for success, data]
-  return [true, data]
-}
 exports.addConsultation = addConsultation;
 exports.upcomingConsultations = upcomingConsultations;
 exports.updateConsultation = updateConsultation;
