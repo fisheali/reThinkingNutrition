@@ -487,3 +487,7 @@ exports.clientInvoices = clientInvoices;
 exports.deleteClient = deleteClient;
 exports.viewAllClients = viewAllClients;
 exports.addRemoveClientCond = addRemoveClientCond;
+exports.deleteClientFromTable = deleteClientFromTable;
+exports.updateClientFromTable = updateClientFromTable;
+exports.updateClientFromTableDatabase = updateClientFromTableDatabase;
+exports.updateClientFromTableDatabase = updateClientFromTableDatabase;
