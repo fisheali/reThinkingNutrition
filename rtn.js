@@ -236,7 +236,7 @@ app.get('/supplements', function(req, res) {
           question: 'Add a new supplement',
           input: '<form action="/addSupplement"><label for="type_supp">Supplement Type: </label><input required type="text" id="type_supp" name="type_supp" placeholder="Supplement Type"><br>\
                       <label for="brand_list">from the brand </label><select class="brand_list" name="add_supp_brand"></select><br>\
-                      <label for="cond_list">for treatment of </label><select class="cond_list" name="treat_cond"></select><br>\
+                      <label for="cond">for treatment of </label><select class="cond_list" name="cond"></select><br>\
                       <input type="submit" value="Submit"></form>'
         }]
       },
@@ -247,8 +247,8 @@ app.get('/supplements', function(req, res) {
           input: '<form action="/updateSupplement">Update Supplement <label for="update_type_supp"> Type: </label><input required type="text" id="old_update_type_supp" name="type_supp" placeholder="Supplement To Update"><br><br>\
                       <label for="update_type_supp">New Type: </label><input type="text" id="update_type_supp" name="update_type_supp" placeholder="New Supplement Type"><br>\
                       <label for="update_brand_list">New Brand: </label><select class="brand_list" name="update_supp_brand"></select><br>\
-                      <label for="cond_list">Add new condition for treatment </label><select class="cond_list" name="treat_cond"></select><br>\
-                      <label for="cond_list">Remove condition for treatment </label><select class="remove_cond_list" name="remove_treat_cond"></select><br>\
+                      <label for="cond">Add new condition for treatment </label><select class="cond_list" name="cond"></select><br>\
+                      <label for="cond">Remove condition for treatment </label><select class="remove_cond_list" name="remove_treat_cond"></select><br>\
                       <input type="submit" value="Submit"></form>'
         }]
       },
@@ -257,7 +257,7 @@ app.get('/supplements', function(req, res) {
       {
         action: [{
           question: 'Search supplements by condition',
-          input: '<form action="/supplementsByCondition">Search supplements that treat <select required class="cond_list" name="treat_cond"></select>\
+          input: '<form action="/supplementsByCondition">Search supplements that treat <select class="cond_list" name="cond" required></select>\
                       <input type="submit" value="Submit"></form>'
         }]
       },
@@ -283,26 +283,27 @@ app.get('/supplements', function(req, res) {
 });
 
 app.get('/articles', function(req, res) {
-  res.render('form', {
+  renderData = {
     title: 'Articles',
     actions: [{
         action: [{
           question: 'Add an article to library',
           input: '<form action="/addArticle"><label for="title">Title: </label><input required type="text" id="title" name="title" placeholder="article title"><br>\
-      <label for="art_supp_list">Article is related to condition: </label><select class="cond_list" name="add_art_cond"></select><br>\
-      <label for="art_cond_list">Article is related to supplement: </label><input type="text" id="add_supp_type" name="add_supp_type" placeholder="Supplement Type"> <br>\
-      <label for="author">Author: </label><input type="text" id="author" name="author" placeholder="author"><br>\
-      <label for="publication">Publication: </label><input type="text" id="publication" name="publication" placeholder="publication"><br>\
-      <label for="publish_date">Publish Date: </label><input type="date" id="publish_date" name="publish_date" placeholder="publish date"><br>\
-      <label for="website_link">Website link: </label><input type="url" id="website_link" name="website_link" placeholder="website link"><br>\
-      <input type="submit" value="Submit"> </form>'
+      <label for="cond">Article is related to condition: </label><select class="cond_list" name="cond"></select><br>\
+      <label for="supp">Article is related to supplement: </label><input type="text" id="supp" name="supp" value="" placeholder="Supplement Type"> <br>\
+      <label for="author">Author: </label><input type="text" id="author" name="author" value="" placeholder="author"><br>\
+      <label for="publication">Publication: </label><input type="text" id="publication" value="" name="publication" placeholder="publication"><br>\
+      <label for="date">Publish Date: </label><input type="date" id="date" name="date" value="" placeholder="publish date"><br>\
+      <label for="website">Website link: </label><input type="url" id="website" name="website" value="" placeholder="website link"><br>\
+      <input type="hidden" name="supp_id" value="">\
+      <input type="submit" value="Add Article"> </form>'
         }]
       },
 
       {
         action: [{
           question: 'Search articles by condition',
-          input: '<form action="/articlesByCondition">Search articles by condition <select required class="cond_list" name="cond"></select><br>\
+          input: '<form action="/articlesByCondition">Search articles by condition <select class="cond_list" name="cond" required></select><br>\
         <input type="submit" value="Submit"></form>'
         }]
       },
@@ -310,7 +311,7 @@ app.get('/articles', function(req, res) {
       {
         action: [{
           question: 'Search articles by supplement',
-          input: '<form action="/articlesBySupplement"><label for="art_from_supp">Search articles by supplement </label><input required type="text" id="art_from_supp" name="art_from_supp" placeholder="Supplement Type"></select><br>\
+          input: '<form action="/articlesBySupplement"><label for="art_from_supp">Search articles by supplement </label><input type="text" id="supp" name="supp" value="" placeholder="Supplement Type" required></select><br>\
       <input type="submit" value="Submit"></form>'
         }]
       },
@@ -321,7 +322,7 @@ app.get('/articles', function(req, res) {
           input: '<form action="/updateArticle"><label for="old_title">Title of Article to Update: </label><input required type="text" id="old_title" name="old_title" placeholder="article title to update"><br><br>\
         <label for="new_title">Updated Title: </label><input type="text" id="new_title" name="new_title" placeholder="updated title"><br>\
         <label for="add_remove_art_supp">Add/Remove </label> <select name="add_remove_art_supp" id="add_remove_art_supp"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
-        relation to condition: <select class="cond_list" name="add_remove_art_cond_list"></select><br>\
+        relation to condition: <select class="cond_list" name="cond"></select><br>\
         <label for="add_remove_art_cond">Add/Remove </label><select name="add_remove_art_cond" id="add_remove_art_cond"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
         relation to supplement:<input type="text" id="update_art_supp" name="update_art_supp" placeholder="Supplement Type"> from <select class="brand_list" name="update_art_supp_brand"></select><br>\
         <label for="new_author">Updated Author: </label><input type="text" id="new_author" name="new_author" placeholder="updated author"><br>\
@@ -340,7 +341,12 @@ app.get('/articles', function(req, res) {
         }]
       }
     ]
-  });
+  };
+  pageData = databaseMethods.addDropDowns(pool);
+  pageData.then( conditions => {
+    finalData = databaseMethods.formatDropDowns(renderData, conditions);
+    res.render('form', finalData);
+  })
 });
 
 app.get('/clientAdd', function(req, res) {
@@ -400,21 +406,11 @@ app.get('/viewRemoveRecommendations', function(req, res) {
 });
 
 app.get('/addArticle', function(req, res) {
-  data = articleMethods.addArticle(req.query);
-  if (data[0]) {
-    res.render('read', data[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  articleMethods.addArticle(req.query, pool, res);
 });
 
 app.get('/articlesByCondition', function(req, res) {
-  articles = articleMethods.articlesByCondition(req.query);
-  if (articles[0]) {
-    res.render('read', articles[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  articleMethods.articlesByCondition(req.query, pool, res);
 });
 
 app.get('/articlesBySupplement', function(req, res) {

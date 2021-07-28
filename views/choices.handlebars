@@ -38,7 +38,7 @@
       <input type="hidden" id="radio_client" name="radio_client" value="{{../radio_client}}">
       <input type="hidden" id="consultation_id" name="consultation_id" value="{{value.[Consultation ID]}}">
       {{#unless stage}}<input type="hidden" id="stage" name="stage" value="stageTwo">{{/unless}}
-      <input type="submit" value="Submit">
+      {{#unless ../no_sub}}<input type="submit" value="Submit">{{/unless}}
       </form>
       </td>
     </tr>

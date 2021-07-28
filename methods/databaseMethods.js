@@ -31,7 +31,8 @@ function multipleRecords(res, action, data) {
     time: 0,
     time_frame: 0,
     radio_client: 0,
-    cosnultation_id: 0
+    cosnultation_id: 0,
+    no_sub : 0
   };
 
   if (data["consultations"]) {
@@ -62,6 +63,11 @@ function multipleRecords(res, action, data) {
   if (data["time_frame"]) {
     let timeFData = data["time_frame"];
     returnData.time_frame = timeFData;
+  }
+
+  if (res["no_sub"]) {
+    let subData = res["no_sub"];
+    returnData.no_sub = subData;
   }
 
   if (data["radio_client"]) {
@@ -198,9 +204,8 @@ async function condList(pool, params) {
 
 }
 
-async function nameRecords(pool, data) {
+async function nameRecords(pool) {
   //First call to check # of name Records
-  console.log(data);
   sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
   FROM Clients cl\
   WHERE (fname = ?\
@@ -211,9 +216,45 @@ async function nameRecords(pool, data) {
     sqlQuery,
     [data.fname, data.lname, data.client_id]
   );
+};
+
+async function addDropDowns(pool) {
+  //Get Condition records
+  return pool.query("SELECT * FROM Conditions;SELECT supplement_id, type, brand_name FROM Supplements LEFT JOIN Brands USING (brand_id);");
 }
 
+function formatDropDowns(renderData, conditions) {
+  //Build Conditions Tag
 
+  supTagRequired = '<select id="supp" name="supp" required><option value="">';
+  supTag = '<select id="supp" name="supp"><option value=""></option>';
+  requiredTag = '<select id="cond" name="cond" required>';
+  tag = '<select id="cond" name="cond"><option value=""></option>';
+  for (let i = 0; i < conditions[0].length; i++) {
+    part = '<option value="' + conditions[0][i].condition_id + '">' + conditions[0][i].condition_name + '</option>';
+    requiredTag += part;
+    tag += part;
+  }
+  for (let i = 0; i < conditions[1].length; i++) {
+    let brandName = (conditions[1][i].brand_name != null) ? conditions[1][i].brand_name + ': ' : '';
+    part = '<option value="' + conditions[1][i].supplement_id + '">' +  brandName + conditions[1][i].type + '</option>';
+    supTagRequired += part;
+    supTag += part;
+  }
+  supTagRequired += '</select>';
+  supTag += '</select>';
+  requiredTag += '</select>';
+  tag += '</select>';
+
+//Replace in renderData
+for (let i = 0; i < renderData.actions.length; i++) {
+  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond" required></select>', requiredTag);
+  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond"></select>', tag);
+  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type" required>', supTagRequired);
+  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type">', supTag);
+  }
+  return renderData;
+};
 
 
 exports.returnPool = returnPool;
@@ -222,3 +263,5 @@ exports.singleRecord = singleRecord;
 exports.condList = condList;
 exports.nameRecords = nameRecords;
 exports.multipleRecords = multipleRecords;
+exports.addDropDowns = addDropDowns;
+exports.formatDropDowns = formatDropDowns;

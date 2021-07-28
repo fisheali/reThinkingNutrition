@@ -4,39 +4,6 @@ function hideMenu(link_element) {
   let style = window.getComputedStyle(divs[1]);
   let display = style.getPropertyValue('display');
   if (display == 'none') {
-    let cond_select_element = divs[1].getElementsByClassName("cond_list");
-    let remove_cond_select_element = divs[1].getElementsByClassName("remove_cond_list");
-    let brand_select_element = divs[1].getElementsByClassName("brand_list");
-    let store_select_element = divs[1].getElementsByClassName("store_list");
-    let remove_store_select_element = divs[1].getElementsByClassName("remove_store_list");
-
-    //Check for Brand List
-    if (brand_select_element[0]) {
-      let brand_options = brand_select_element[0].getElementsByTagName("OPTION")
-      if (!brand_options[0]) {
-        fillDropDownList(brand_select_element[0]);
-        if (brand_select_element[1]) {
-          let brand_options_next = brand_select_element[1].getElementsByTagName("OPTION")
-          if (!brand_options_next[0]) {
-            fillDropDownList(brand_select_element[1]);
-          }
-        }
-      }
-    }
-    //Check for Store list
-    if (store_select_element[0]) {
-      let store_options = store_select_element[0].getElementsByTagName("OPTION")
-      if (!store_options[0]) {
-        fillDropDownList(store_select_element[0]);
-      }
-    }
-    //Check for removeStore list
-    if (remove_store_select_element[0]) {
-      let remove_store_options = remove_store_select_element[0].getElementsByTagName("OPTION")
-      if (!remove_store_options[0]) {
-        fillDropDownList(remove_store_select_element[0]);
-      }
-    }
     divs[1].style.display = 'inherit';
   } else {
     divs[1].style.display = 'none';
