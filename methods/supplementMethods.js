@@ -1,38 +1,6 @@
 function addSupplement(data) {
   //log data for debug
-  console.log(data);
-  title = "Add Supplement";
 
-  //Database call logic
-
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data = [{
-    "Supplement Name": "Magnesium",
-    "Brand": "Mad Max"
-  }]
-  //Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({
-      value: Object.values(sql_data[i])
-    });
-  }
-
-  data = {
-    keys: Object.keys(sql_data[0]),
-    title: title,
-    values: val
-  };
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, data]
-  //Database Call logic
-
-  //Return failure or success
-  return true;
 };
 
 function updateSupplement(data) {

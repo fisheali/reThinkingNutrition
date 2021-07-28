@@ -229,7 +229,7 @@ app.get('/consultations', function(req, res) {
 });
 
 app.get('/supplements', function(req, res) {
-  res.render('form', {
+  renderData = {
     title: 'Supplements',
     actions: [{
         action: [{
@@ -279,6 +279,15 @@ app.get('/supplements', function(req, res) {
       }
 
     ]
+  };
+  pageData = databaseMethods.addDropDowns(pool);
+  pageData.then(conditions => {
+    finalData = databaseMethods.formatDropDowns(renderData, conditions);
+    res.render('form', finalData);
+  })
+  .catch( err => {
+    console.log(err);
+    res.render('failure');
   });
 });
 
@@ -358,7 +367,7 @@ app.get('/updateClientRecords', function(req, res) {
 
 app.get('/addRemoveClientCond', function(req, res) {
   clientMethods.addRemoveClientCond(req.query, pool, res);
-  
+
 });
 
   app.get('/viewAllClients', function(req, res) {
@@ -374,7 +383,7 @@ app.get('/addRemoveClientCond', function(req, res) {
     console.log(req.body);
     let data = req.body;
     clientMethods.updateClientFromTableDatabase(data, pool, res);
-    
+
   });
 
   app.get('/deleteClientFromTable/:id', function(req, res) {
@@ -499,7 +508,7 @@ app.get('/supplementsByBrand', function(req, res) {
 });
 
 app.get('/addCondition', function(req, res) {
-  conditionMethods.addCondition(req.query);
+  conditionMethods.addCondition(req.query, pool, res);
 });
 
 

@@ -2,14 +2,16 @@ function addCondition(data, pool, res) {
 
   pool.query(
     "INSERT INTO Conditions (condition_name) \
-    VALUES (?)", Object.values(data))
+    VALUES (?)",
+     [data.add_cond]
+   )
     .then( confirmation => {
       console.log(confirmation);
-      return true;                                 //Confirmation console logginf for debug
+      res.render('success');                                 //Confirmation console logginf for debug
     })
     .catch( err => {                                                   //Error Catching
       console.log("FAILED: Add Condition failed with error: " + err);
-      return false;
+      res.render('failure');
     });
 };
 

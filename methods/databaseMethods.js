@@ -89,7 +89,6 @@ function multipleRecords(res, action, data) {
   return returnData;
 };
 
-
 function multipleNameRecords(res, action, data) {
   val = [];
   for (let i = 0; i < res.length; i++) {
