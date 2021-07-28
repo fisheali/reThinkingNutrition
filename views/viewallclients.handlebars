@@ -28,6 +28,7 @@
       {{!-- For each row, print the id, fname, lname, phone, email, address, city in order --}}
       {{#each response}}
         <tr>
+<<<<<<< HEAD
           <td>{{this.client_id}}</td>
           <td>{{fname}}</td>
           <td>{{this.lname}}</td>
@@ -43,6 +44,23 @@
             {{/if}}</td>
           <td><button onclick="deleteClient({{id}})">Delete</button></td>
           <td><a href='/{{this.id}}'>Update</a></td>
+=======
+            <td>{{this.client_id}}</td>
+            <td>{{fname}}</td>
+            <td>{{this.lname}}</td>
+            <td>{{this.phone}}</td>
+            <td>{{this.email}}</td>
+            <td>{{#if this.city }}
+                {{this.city}}
+                 {{else}}                
+                {{/if}}</td>
+            <td>{{#if this.address }}
+                {{this.address}}
+                 {{else}}                
+                {{/if}}</td>
+            <td><button><a href="/deleteClientFromTable/{{this.client_id}}">Delete</a></button></td>
+            <td><a href="/updateClientFromTable/{{this.client_id}}">Update</a></td>
+>>>>>>> 81898522ddb812da8bd5099665ce0c626fe4b8f5
         </tr>
       {{/each}}
     </tbody>
