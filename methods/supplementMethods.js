@@ -8,17 +8,23 @@ function addSupplement(data) {
   //Logic to check if there are multiple records returned
 
   //placeholder data
-  sql_data =
-    [
-      {"Supplement Name": "Magnesium", "Brand": "Mad Max"}
-    ]
-//Potential Data Format Method
+  sql_data = [{
+    "Supplement Name": "Magnesium",
+    "Brand": "Mad Max"
+  }]
+  //Potential Data Format Method
   val = []
   for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+    val.push({
+      value: Object.values(sql_data[i])
+    });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+  data = {
+    keys: Object.keys(sql_data[0]),
+    title: title,
+    values: val
+  };
 
 
   //Return [bool for success, bool for multiple records, data]
@@ -39,18 +45,24 @@ function updateSupplement(data) {
   //Logic to check if there are multiple records returned
 
   //placeholder data
-  sql_data =
-    [
-      {"Supplement Name": "Magnesium", "Brand": "Sane Max"}
-    ];
+  sql_data = [{
+    "Supplement Name": "Magnesium",
+    "Brand": "Sane Max"
+  }];
 
-//Potential Data Format Method
+  //Potential Data Format Method
   val = []
   for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+    val.push({
+      value: Object.values(sql_data[i])
+    });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+  data = {
+    keys: Object.keys(sql_data[0]),
+    title: title,
+    values: val
+  };
 
 
   //Return [bool for success, bool for multiple records, data]
@@ -67,17 +79,22 @@ function addBrand(data) {
   //Logic to check if there are multiple records returned
 
   //placeholder data
-  sql_data =
-    [
-      {"Brand Name": "Calvin's NOT so Curious Concoctions"}
-    ]
-//Potential Data Format Method
+  sql_data = [{
+    "Brand Name": "Calvin's NOT so Curious Concoctions"
+  }]
+  //Potential Data Format Method
   val = []
   for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+    val.push({
+      value: Object.values(sql_data[i])
+    });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+  data = {
+    keys: Object.keys(sql_data[0]),
+    title: title,
+    values: val
+  };
 
 
   //Return [bool for success, bool for multiple records, data]
@@ -98,18 +115,23 @@ function removeBrand(data) {
   //Logic to check if there are multiple records returned
 
   //placeholder data
-  sql_data =
-    [
-      {"Brand": "Calvin's Curious Concoctions"}
-    ];
+  sql_data = [{
+    "Brand": "Calvin's Curious Concoctions"
+  }];
 
-//Potential Data Format Method
+  //Potential Data Format Method
   val = []
   for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+    val.push({
+      value: Object.values(sql_data[i])
+    });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+  data = {
+    keys: Object.keys(sql_data[0]),
+    title: title,
+    values: val
+  };
 
 
   //Return [bool for success, bool for multiple records, data]
@@ -126,19 +148,32 @@ function supplementsByCondition(data) {
   //Logic to check if there are multiple records returned
 
   //placeholder data
-  sql_data =
-    [
-      {"Supplement Type": "Magnesium", "Brand": "Mad Max"},
-      {"Supplement Type": "Milkthistle", "Brand": "Calvin's NOT so Curious Concoctions"},
-      {"Supplement Type": "Cat Toe Bean", "Brand": "Calvin's Curious Concoctions"}
-    ]
-//Potential Data Format Method
+  sql_data = [{
+      "Supplement Type": "Magnesium",
+      "Brand": "Mad Max"
+    },
+    {
+      "Supplement Type": "Milkthistle",
+      "Brand": "Calvin's NOT so Curious Concoctions"
+    },
+    {
+      "Supplement Type": "Cat Toe Bean",
+      "Brand": "Calvin's Curious Concoctions"
+    }
+  ]
+  //Potential Data Format Method
   val = []
   for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+    val.push({
+      value: Object.values(sql_data[i])
+    });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+  data = {
+    keys: Object.keys(sql_data[0]),
+    title: title,
+    values: val
+  };
 
 
   //Return [bool for success, bool for multiple records, data]
@@ -155,19 +190,32 @@ function supplementsByBrand(data) {
   //Logic to check if there are multiple records returned
 
   //placeholder data
-  sql_data =
-    [
-      {"Supplement Type": "Magnesium", "Brand": "Mad Max"},
-      {"Supplement Type": "Milkthistle", "Brand": "Mad Max"},
-      {"Supplement Type": "Mummer's Miracle", "Brand": "Mad Max"}
-    ]
-//Potential Data Format Method
+  sql_data = [{
+      "Supplement Type": "Magnesium",
+      "Brand": "Mad Max"
+    },
+    {
+      "Supplement Type": "Milkthistle",
+      "Brand": "Mad Max"
+    },
+    {
+      "Supplement Type": "Mummer's Miracle",
+      "Brand": "Mad Max"
+    }
+  ]
+  //Potential Data Format Method
   val = []
   for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
+    val.push({
+      value: Object.values(sql_data[i])
+    });
   }
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+  data = {
+    keys: Object.keys(sql_data[0]),
+    title: title,
+    values: val
+  };
 
 
   //Return [bool for success, bool for multiple records, data]

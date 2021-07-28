@@ -6,6 +6,7 @@
 
   <h1>Multiple Records Found for {{name}}</h1>
 <div class="response">
+  {{#if keys}}
   <table>
     <tr>
     {{#each keys}}
@@ -24,8 +25,10 @@
       <td>
       <form action="{{../action}}">
       <input type="hidden" id="fname" name="fname" value="">
-      <input type="hidden" id="lname" name="lname" value="">
-      <input type="hidden" id="client_id" name="client_id" value="{{value.[0]}}">
+      <input type="hidden" id="fname" name="lname" value="">
+      <input type="hidden" id="lname" name="fname_non_null" value="{{value.[First Name]}}">
+      <input type="hidden" id="lname" name="lname_non_null" value="{{value.[Last Name]}}">
+      <input type="hidden" id="client_id" name="client_id" value="{{value.[Client ID]}}">
       <input type="hidden" id="consultations" name="consultations" value="{{../consultations}}">
       <input type="hidden" id="supplements" name="supplements" value="{{../supplements}}">
       <input type="hidden" id="articles" name="articles" value="{{../articles}}">
@@ -33,10 +36,27 @@
       <input type="hidden" id="time" name="time" value="{{../time}}">
       <input type="hidden" id="time_frame" name="time_frame" value="{{../time_frame}}">
       <input type="hidden" id="radio_client" name="radio_client" value="{{../radio_client}}">
+      <input type="hidden" id="consultation_id" name="consultation_id" value="{{value.[Consultation ID]}}">
+      {{#unless stage}}<input type="hidden" id="stage" name="stage" value="stageTwo">{{/unless}}
       <input type="submit" value="Submit">
       </form>
       </td>
     </tr>
     {{/each}}
-
   </table>
+  {{/if}}
+  {{#if condition_id}}
+  <form action="{{action}}">
+  <p>Add <select class="cond_list" name="condition_id">{{#each conAdd}}<option value="{{this.condition_id}}">{{this.condition_name}}</option>{{/each}}</select> to {{fname}}  {{lname}}
+  <input type="hidden" name="client_id" value="{{client_id}}">
+  <input type="hidden" id="fname" name="fname" value="">
+  <input type="hidden" id="fname" name="lname" value="">
+  <input type="hidden" id="add" name="add" value="true"><input type="submit" value="Submit"></form><br></p>
+
+  <form action="{{action}}">
+  <p>Remove <select class="cond_list" name="condition_id">{{#each conRemove}}<option value="{{this.condition_id}}">{{this.condition_name}}</option>{{/each}}</select> from {{fname}}  {{lname}}
+  <input type="hidden" name="client_id" value="{{client_id}}">
+  <input type="hidden" id="fname" name="fname" value="">
+  <input type="hidden" id="fname" name="lname" value=""><input type="hidden" name="remove" value="true"><input type="submit" value="Submit"></form><br></p>
+  {{/if}}
+</div>

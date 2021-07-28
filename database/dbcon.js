@@ -1,5 +1,5 @@
 // Get an instance of mysql we can use in the app
-var mysql = require('mysql')
+var mysql = require('mysql');
 
 // Create a 'connection pool' using the provided credentials
 var pool = mysql.createPool({
@@ -8,7 +8,7 @@ var pool = mysql.createPool({
     user            : 'cs340_',
     password        : '',
     database        : 'cs340_'
-})
+});
 
 // Export it for use in our applicaiton
 module.exports.pool = pool;

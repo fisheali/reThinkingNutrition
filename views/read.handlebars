@@ -1,99 +1,99 @@
 <a href="/">
-<span id="menu_span">
-<p id='menu_logo'><img src='../images/logo.webp'></p>
-</span>
+  <span id="menu_span">
+    <p id='menu_logo'><img src='../images/logo.webp'></p>
+  </span>
 </a>
 
-    <h1>Records for {{record.[0].title}}</h1>
-    <div class="response">
-    <table>
-    <tr>
-    {{#each record.[0].keys}}
-    <th>
-      {{this}}
-    </th>
-    {{/each}}
-    <tr>
-    {{#each record.[0].values}}
-    <tr>
-    {{#each value}}
-    <th>
-      {{this}}
-    </th>
-    {{/each}}
-    <tr>
-    {{/each}}
-  </table>
-  </div>
-
-{{#if consultations}}
-<h1>Record of {{consultations.[0].title}}</h1>
+<h1>Records for {{record.[0].title}}</h1>
 <div class="response">
-<table>
-      <tr>
-  {{#each consultations.[0].keys}}
-      <th>
-            {{this}}
-      </th>
-  {{/each}}
-      <tr>
-  {{#each consultations.[0].values}}
-      <tr>
-  {{#each value}}
-      <th>
-           {{this}}
-      </th>
-  {{/each}}
-      <tr>
-  {{/each}}
+  <table>
+    <tr>
+      {{#each record.[0].keys}}
+        <th>
+          {{this}}
+        </th>
+      {{/each}}
+    <tr>
+      {{#each record.[0].values}}
+    <tr>
+      {{#each value}}
+        <th>
+          {{this}}
+        </th>
+      {{/each}}
+    <tr>
+      {{/each}}
   </table>
 </div>
+
+{{#if consultations}}
+  <h1>Record of {{consultations.[0].title}}</h1>
+  <div class="response">
+    <table>
+      <tr>
+        {{#each consultations.[0].keys}}
+          <th>
+            {{this}}
+          </th>
+        {{/each}}
+      <tr>
+        {{#each consultations.[0].values}}
+      <tr>
+        {{#each value}}
+          <th>
+            {{this}}
+          </th>
+        {{/each}}
+      <tr>
+        {{/each}}
+    </table>
+  </div>
 {{/if}}
 
 {{#if supplements}}
-<h1>Reccomended {{supplements.[0].title}}</h1>
-<div class="response">
-<table>
+  <h1>Reccomended {{supplements.[0].title}}</h1>
+  <div class="response">
+    <table>
       <tr>
-  {{#each supplements.[0].keys}}
-      <th>
+        {{#each supplements.[0].keys}}
+          <th>
             {{this}}
-      </th>
-  {{/each}}
+          </th>
+        {{/each}}
       <tr>
-  {{#each supplements.[0].values}}
+        {{#each supplements.[0].values}}
       <tr>
-  {{#each value}}
-      <th>
-           {{this}}
-      </th>
-  {{/each}}
+        {{#each value}}
+          <th>
+            {{this}}
+          </th>
+        {{/each}}
       <tr>
-  {{/each}}
-  </table>
-</div>
+        {{/each}}
+    </table>
+  </div>
 {{/if}}
 
 {{#if articles}}
-<h1>Reccomended {{articles.[0].title}}</h1>
-<div class="response">
-<table>
+  <h1>Reccomended {{articles.[0].title}}</h1>
+  <div class="response">
+    <table>
       <tr>
-  {{#each articles.[0].keys}}
-      <th>
+        {{#each articles.[0].keys}}
+          <th>
             {{this}}
-      </th>
-  {{/each}}
+          </th>
+        {{/each}}
       <tr>
-  {{#each articles.[0].values}}
+        {{#each articles.[0].values}}
       <tr>
-  {{#each value}}
-      <th>
-           {{this}}
-      </th>
-  {{/each}}
+        {{#each value}}
+          <th>
+            {{this}}
+          </th>
+        {{/each}}
       <tr>
-  {{/each}}
-  </table>
-</div>
+        {{/each}}
+    </table>
+  </div>
 {{/if}}

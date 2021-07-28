@@ -3,265 +3,532 @@ var databaseMethods = require('../methods/databaseMethods.js');
 function addConsultation(data, pool, res) {
   action = '/addConsultation'
   //First call to check # of name Records
-  sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
-  FROM Clients cl\
-  WHERE (fname = ?\
-    AND lname = ?)\
-    OR (client_id = ?);";
-
-  pool.query(
-      sqlQuery,
-      Object.values(data)
-    )
+  nameData = databaseMethods.nameRecords(pool, data);
   //Logic to check if there are multiple records returned
-    .then( response => {
-      if (response.length > 1) {
-        returnData = databaseMethods.multipleNameRecords(response, action, data);
-        res.render('choices', returnData);
-      }
-      else
-      {
-        sqlQuery = "INSERT INTO Consultations (date, time, client_id)\
+  nameData.then(response => {
+    if (!data.client_id) {
+      returnData = databaseMethods.multipleNameRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    } else {
+      sqlQuery = "INSERT INTO Consultations (date, time, client_id)\
         VALUES (?, ?, ?);";
-        pool.query(
-            sqlQuery,
-            [data.date, data.time, data.client_id]
-          )
-          .then( response => {
-            res.render('success');
-          })
-          .catch( err => {                                                   //Error Catching
-            console.log("FAILED: Add Consultation failed with error: " + err);
-            res.render('failure');
-          })
-        }
-      })
-    .catch( err => {                                                   //Error Catching
-      console.log("FAILED: Add Consultation failed with error: " + err);
-      res.render('failure');
+      pool.query(
+          sqlQuery,
+          [data.date, data.time, data.client_id]
+        )
+        .then(response => {
+          res.render('success');
+        })
+        .catch(err => { //Error Catching
+          console.log("FAILED: Add Consultation failed with error: " + err);
+          pool.release;
+          res.render('failure');
+        })
+    }
+  })
+  nameData.catch(err => { //Error Catching
+    pool.release;
+    console.log("FAILED: Add Consultation failed with error: " + err);
+    res.render('failure');
   });
 };
 
 function upcomingConsultations(data, pool, res) {
   //log data fro debug
-  console.log(data);
   title = "Upcoming Consultations";
   action = '/upcomingConsultations'
   //First call to check # of name Records
-  sqlQuery = "SELECT client_id AS 'Client ID', fname AS 'First Name', lname AS 'Last Name', phone AS 'Phone Number', email AS 'Email Address', address AS 'Street Address', city AS 'City' \
-  FROM Clients cl\
-  WHERE (fname = ?\
-    AND lname = ?)\
-    OR (client_id = ?);";
-
-  pool.query(
-      sqlQuery,
-      [data.fname, data.lname, data.client_id]
-    )
+  nameRecords = databaseMethods.nameRecords(pool, data);
   //Logic to check if there are multiple records returned
-    .then( response => {
-      if (response.length > 1) {
-        returnData = databaseMethods.multipleNameRecords(response, action, data);
-        res.render('choices', returnData);
-      }
-      else {
-        //Build SQL Call based on inputs
-        sqlQuery = "SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time'\
+  nameRecords.then(response => {
+    if (!data.client_id && data.radio_client != 'all_clients') {
+      returnData = databaseMethods.multipleNameRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    } else {
+      //Build SQL Call based on inputs
+      sqlQuery = "SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time'\
         FROM Consultations\
         LEFT JOIN Clients\
         USING (client_id)\
         WHERE "
 
-        if (data.time_frame != 'all_time')
-        {
-          var timeFrame
-          if (data.time_frame == '2_weeks'){
-            timeFrame = '14';
-          }
-          else {
-            timeFrame = '30';
-          }
-          sqlQuery = sqlQuery + "DATEDIFF(DATE_ADD(CURDATE(), INTERVAL + " + timeFrame + " DAY), date) >= 0\
-          AND ";
+      if (data.time_frame != 'all_time') {
+        var timeFrame
+        if (data.time_frame == '2_weeks') {
+          timeFrame = '14';
+        } else {
+          timeFrame = '30';
         }
+        sqlQuery = sqlQuery + "DATEDIFF(DATE_ADD(CURDATE(), INTERVAL + " + timeFrame + " DAY), date) >= 0\
+          AND ";
+      }
 
-        sqlQuery = sqlQuery + "date > CURDATE()"
+      sqlQuery = sqlQuery + "date > CURDATE()"
 
-        if (data.radio_client == 'specific_client')
-        {
-          sqlQuery = sqlQuery + " AND client_id = ?;";
-          pool.query(
+      if (data.radio_client == 'specific_client') {
+        sqlQuery = sqlQuery + " AND client_id = ?;";
+        pool.query(
             sqlQuery,
             [data.client_id]
           )
-          .then( response => {
+          .then(response => {
             console.log(response);
             let returnData = {};
             let dat = databaseMethods.singleRecord(response, title);
             returnData.record = [dat];
+            pool.release;
             res.render('read', returnData);
           })
-          .catch( err => {                                                   //Error Catching
+          .catch(err => { //Error Catching
             console.log("FAILED: View Upcoming Consultations failed with error: " + err);
+            pool.release;
             res.render('failure');
           });
-        }
-        else
-        {
-          sqlQuery = sqlQuery + ";";
-          pool.query(
+      } else {
+        sqlQuery = sqlQuery + ";";
+        pool.query(
             sqlQuery
           )
-          .then( response => {
-            console.log(response);
+          .then(response => {
             let returnData = {};
             let dat = databaseMethods.singleRecord(response, title);
+            pool.release;
             returnData.record = [dat];
             res.render('read', returnData);
           })
-          .catch( err => {                                                   //Error Catching
+          .catch(err => { //Error Catching
             console.log("FAILED: View Upcoming Consultations failed with error: " + err);
+            pool.release;
             res.render('failure');
           });
-        }
       }
-    })
-    .catch( err => {                                                   //Error Catching
-      console.log("FAILED: View Upcoming Consultations failed with error: " + err);
-      res.render('failure');
+    }
+  })
+  nameRecords.catch(err => { //Error Catching
+    console.log("FAILED: View Upcoming Consultations failed with error: " + err);
+    pool.release;
+    res.render('failure');
   });
 }
 
-function updateConsultation(data) {
-  //log data fro debug
-  console.log(data);
-  title = "Update Client Consultation";
+function updateConsultation(data, pool, res) {
+  title = "Update Consultations";
+  action = "/updateConsultation"
 
   //Database call logic
-
+  //First call to check # of name Records
+  nameRecords = databaseMethods.nameRecords(pool, data);
   //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data =
-    [
-      {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "date": "april 5th 2011", "time": "4:20", "completed" : true, "paid" : false, "notes" : "Calvin made great progress today, we are all very proud of him"}
-    ];
-
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
-  }
-
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
-}
-
-function deleteConsultation(data) {
-  //log data fro debug
-  console.log(data);
-  title = "Remove Consultation";
-
-  //Database call logic
-
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data =
-  [
-    {"first name": "Calvin", "last namne": "Todd", "phone": "703-282-6899", "email": "toddcal@oregonstate.edu", "date": "Febuary 3rd 1955", "time": "5:30"}
-  ];
-
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
-  }
-
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
-}
-
-function makeRecommendation(data) {
-  //log data for debugging
-  console.log(data);
-  title = "Make Reccomendation";
-
-  //SQL call for recceomendations
-  if (data.choices == 'true') {
-    sql_data = [{reccomendations : [{"articles" : ["art1 ", "art2", "art3"], "supplements" : ["supp1", "supp2", "supp3"]}]}];
-    data = {keys : Object.keys(sql_data[0].reccomendations[0]), title : title, articles: Object.values(sql_data[0].reccomendations[0].articles), supplements:  Object.values(sql_data[0].reccomendations[0].supplements), choices : data.choices};
-  }
-  else {
-    sql_data = [data];
-    val = []
-    for (i = 0; i < sql_data.length; i++) {
-      val.push({value : Object.values(sql_data[i])});
+  nameRecords.then(response => {
+    if (!data.client_id) {
+      returnData = databaseMethods.multipleNameRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    } else if (data["updateConfirmed"]) {
+      if (!data.completed) {
+        data.completed = 0;
+      }
+      if (!data.paid) {
+        data.paid = 0;
+      }
+      sqlQuery = "UPDATE Consultations\
+        SET date = ?, time = ?, completed = ?, paid = ?, note = ?\
+        WHERE consultation_id = ?;";
+      // pool.release;
+      pool.query(
+          sqlQuery,
+          [data.date, data.time, data.completed, data.paid, data.notes, data.consultation_id]
+        )
+        .then(response => {
+          pool.release;
+          res.render('success', response);
+        })
+        .catch(err => { //Error Catching
+          console.log("FAILED: updateClientRecords failed with error: " + err);
+          pool.release;
+        });
     }
+    //Single Record Returned
+    else {
+      sqlQuery = "SELECT consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time', paid AS 'Paid', completed AS 'Completed', note AS 'Notes', client_id AS 'Client ID'\
+        FROM Consultations\
+        JOIN Clients\
+        USING (client_id)\
+        WHERE (consultation_id = ?)\
+        OR (client_id = ?)\
+        OR (fname = ? AND lname = ?);";
 
-    data = {keys : Object.keys(sql_data[0]), title : title, values: val, choices : data.choices};
-  }
+      pool.query(
+          sqlQuery,
+          [data.consultation_id, data.client_id, data.fname, data.lname]
+        )
+        .then(response => {
+          if (!data.consultation_id) {
+            returnData = databaseMethods.multipleRecords(response, action, data);
+            pool.release;
+            res.render('choices', returnData);
+          } else {
+            var returnData = {
+              record: 0,
+              title: title
+            };
+            let dat = response;
+            //NOTE ABSENSE OF BRACKETS
+            returnData.record = dat;
+            pool.release;
+            res.render('update', returnData);
+          }
+        })
+        .catch(err => { //Error Catching
+          console.log("FAILED: updateClientRecords failed with error: " + err);
+          pool.release;
+        });
+    }
+  })
+  nameRecords.catch(err => { //Error Catching
+    console.log("FAILED: updateClientRecords failed with error: " + err);
+    pool.release;
+  });
+};
 
-  //Data Format
-
-
-  //Return [bool for success, data]
-  return [true, data]
-}
-
-function viewReccomendations(data) {
+function deleteConsultation(data, pool, res) {
   //log data fro debug
-  console.log(data);
-  title = "View Reccomendations";
+  title = "Delete Consultations";
+  action = "/deleteConsultation"
 
   //Database call logic
-
+  //First call to check # of name Records
+  nameRecords = databaseMethods.nameRecords(pool, data);
   //Logic to check if there are multiple records returned
+  nameRecords.then(response => {
+    console.log(data);
+    if (!data.client_id) {
+      returnData = databaseMethods.multipleNameRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    } else if (data.consultation_id) {
 
-  //placeholder data
-  sql_data =
-    [
-      {"first name": "Calvin", "last namne": "Todd", "Reccomended Articles": "[Article 1, Articles 2, Article 3]"},
-      {"first name": "Calvin", "last namne": "Todd", "Reccomended Supplements": "[Supplement 1, Supplement 2, Supplement 3]"}
-    ];
+      sqlQuery = "DELETE\
+        FROM Consultations\
+        WHERE (consultation_id = ?);";
+      // pool.release;
+      pool.query(
+          sqlQuery,
+          [data.consultation_id]
+        )
+        .then(response => {
+          pool.release;
+          res.render('success', response);
+        })
+        .catch(err => { //Error Catching
+          console.log("FAILED: updateClientRecords failed with error: " + err);
+          pool.release;
+        });
+    }
+    //Single Record Returned
+    else {
+      sqlQuery = "SELECT client_id AS 'Client ID', consultation_id AS 'Consultation ID', fname AS 'First Name', lname AS 'Last Name', date AS 'Date', time AS 'Time', paid AS 'Paid', completed AS 'Completed', note AS 'Notes'\
+        FROM Consultations\
+        JOIN Clients\
+        USING (client_id)\
+        WHERE (consultation_id = ?)\
+        OR (client_id = ?)\
+        OR (fname = ? AND lname = ?);";
 
-//Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({value : Object.values(sql_data[i])});
-  }
+      pool.query(
+          sqlQuery,
+          [data.consultation_id, data.client_id, data.fname, data.lname]
+        )
+        .then(response => {
+          returnData = databaseMethods.multipleRecords(response, action, data);
+          res.render('choices', returnData);
+        })
+        .catch(err => { //Error Catching
+          console.log("FAILED: updateClientRecords failed with error: " + err);
+          pool.release;
+        });
+    }
+  })
+  nameRecords.catch(err => { //Error Catching
+    console.log("FAILED: updateClientRecords failed with error: " + err);
+    pool.release;
+  });
+};
 
-  data = {keys : Object.keys(sql_data[0]), title : title, values: val};
+
+function makeRecommendation(data, pool, res) {
+  //log data for debugging
+  action = '/makeRecommendation';
+  title = 'Make a Recommendation';
+
+  //Name Checking
+  nameRecords = databaseMethods.nameRecords(pool, data);
+
+  nameRecords.then(response => {
+    if (!data.client_id) {
+      records = databaseMethods.multipleNameRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    } else if (data.stage == 'stageTwo') {
+      condList = databaseMethods.condList(pool, {
+        client_id: data.client_id,
+        full_list: true
+      })
+      condList.then(response => {
+        console.log(response);
+        returnData = {
+          client_id: data.client_id,
+          fname: data.fname_non_null,
+          lname: data.lname_non_null,
+          con: response,
+          con_choice: true,
+          action: action,
+          title: title
+        };
+        console.log(returnData);
+        console.log(data);
+        res.render('makerecommendation', returnData)
+      })
+      condList.catch(err => {
+        console.log("MakeRecommendation Failed with: " + err);
+        res.render('failure');
+      })
+    } else if (data.stage == 'recs') {
+      sqlQuery = "";
+      params = [];
+
+      sqlQuery += "SELECT co.condition_name AS 'Condition Name', css.supplement_id AS 'Supplement ID', type AS 'Type', brand_name AS 'Brand'\
+      FROM Conditions co\
+      JOIN Conditions_Supplements cs\
+      USING (condition_id)\
+      JOIN\
+      (\
+           SELECT s.supplement_id, s.type, s.brand_id\
+           FROM Supplements s\
+           LEFT JOIN\
+           (\
+               SELECT client_id, supplement_id\
+               FROM Clients_Supplements cl\
+               WHERE client_id = ?\
+           ) as cs\
+           ON (s.supplement_id = cs.supplement_id)\
+           WHERE client_id IS NULL\
+      ) css\
+      ON (cs.supplement_id = css.supplement_id)\
+      LEFT JOIN Brands b\
+      ON (css.brand_id = b.brand_id)\
+      WHERE (condition_id = ?);"
 
 
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
+
+
+      sqlQuery += "SELECT condition_name AS 'Condition Name', asz.article_id AS 'Article ID', title AS 'Title', author AS 'Author', publication AS 'Publication', website AS 'Website'\
+      FROM Conditions co\
+      JOIN Conditions_Articles ca\
+      USING (condition_id)\
+      JOIN\
+      (\
+           SELECT a.article_id, a.title, a.author, a.publication, a.website\
+           FROM Articles a\
+           LEFT JOIN\
+           (\
+               SELECT client_id, article_id\
+               FROM Clients_Articles al\
+               WHERE client_id = ?\
+           ) AS asx\
+           ON (a.article_id = asx.article_id)\
+           WHERE client_id IS NULL\
+      ) asz\
+      ON (ca.article_id = asz.article_id)\
+      WHERE (condition_id = ?);"
+
+
+
+      //DB call
+      pool.query(
+          sqlQuery,
+          [data.client_id, data.condition_id, data.client_id, data.condition_id]
+        )
+        .then(response => {
+          console.log(response);
+          returnData = {
+            client_id: data.client_id,
+            fname: data.fname,
+            lname: data.lname,
+            rec_choice: true,
+            action: action,
+            title: title,
+            art_rec: response[1],
+            supp_rec: response[0],
+            button: "Add Selected Recommendations"
+          }
+          res.render('makerecommendation', returnData);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    } else if (data.stage == "update") {
+
+      sqlQuery = "";
+      params = [];
+
+      if (data.supplement) {
+        for (let i = 0; i < data.supplement.length; i++) {
+          sqlQuery += "INSERT INTO Clients_Supplements (date_recommended, client_id, supplement_id)\
+        VALUES (CURDATE(), ?, ?);"
+          params.push(data.client_id);
+          params.push(data.supplement[i]);
+        }
+      }
+
+      if (data.article) {
+        for (let i = 0; i < data.article.length; i++) {
+          sqlQuery += "INSERT INTO Clients_Articles (date_recommended, client_id, article_id)\
+        VALUES (CURDATE(), ?, ?);"
+          params.push(data.client_id);
+          params.push(data.article[i]);
+        }
+      }
+      pool.query(
+          sqlQuery,
+          params
+        )
+        .then(response => {
+          console.log(response);
+          res.render('success');
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  })
 }
 
-function removeReccomendations(data) {
+function viewRecommendations(data, pool, res) {
+  //log data fro debug
+  title = "Client Records";
+  action = '/viewRemoveRecommendations'
+  nameRecords = databaseMethods.nameRecords(pool, data);
+
+  nameRecords.then(response => {
+    if (!data.client_id) {
+      records = databaseMethods.multipleNameRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    }
+    //Get all recceomendations
+    else if (data.stage == 'stageTwo') {
+      sqlQuery = "SELECT fname AS 'First Name', lname AS 'Last Name', article_id as 'Article ID', date_recommended AS 'Date Recommended', title AS 'Title', author AS 'Author', publication AS 'Publication', website as 'Website'\
+    FROM Clients c\
+    JOIN Clients_Articles ca\
+    USING (client_id)\
+    JOIN Articles a\
+    USING (article_id)\
+    WHERE client_id = ?;SELECT fname AS 'First Name', lname AS 'Last Name', supplement_id as 'Supplement ID', date_recommended AS 'Date Recommended', type AS 'Type', brand_name AS 'Brand'\
+    FROM Clients c\
+    JOIN Clients_Supplements cs\
+    USING (client_id)\
+    JOIN Supplements s\
+    USING (supplement_id)\
+    LEFT JOIN Brands b\
+    USING (brand_id)\
+    WHERE client_id = ?;"
+
+      pool.query(
+          sqlQuery,
+          [data.client_id, data.client_id]
+        )
+        .then(response => {
+          returnData = {
+            client_id: data.client_id,
+            fname: data.fname,
+            lname: data.lname,
+            rec_choice: true,
+            action: action,
+            title: title,
+            art_rec: response[0],
+            supp_rec: response[1],
+            button: "Remove Selected Recommendations"
+          }
+          res.render('makerecommendation', returnData);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    } else if (data.stage == 'update') {
+      sqlQuery = "";
+      params = [];
+
+      if (data.supplement) {
+        for (let i = 0; i < data.supplement.length; i++) {
+          sqlQuery += "DELETE FROM Clients_Supplements WHERE client_id = ? AND supplement_id = ?;"
+          params.push(data.client_id);
+          params.push(data.supplement[i]);
+        }
+      }
+
+      if (data.article) {
+        for (let i = 0; i < data.article.length; i++) {
+          sqlQuery += "DELETE FROM Clients_Articles WHERE client_id = ? AND supplement_id = ?;"
+          params.push(data.client_id);
+          params.push(data.article[i]);
+        }
+      }
+      pool.query(
+          sqlQuery,
+          params
+        )
+        .then(response => {
+          console.log(response);
+          res.render('success');
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  })
+  nameRecords.catch(err => {
+    console.log(err);
+  })
+}
+
+function removeReccomendations(data, pool, res) {
   //log data for debugging
-  console.log(data);
   title = "Remove Reccomendation";
 
   //SQL call for recceomendations
   if (data.choices == 'true') {
-    sql_data = [{reccomendations : [{"articles" : ["art1 ", "art2", "art3"], "supplements" : ["supp1", "supp2", "supp3"]}]}];
-    data = {title: title, keys : Object.keys(sql_data[0].reccomendations[0]), title : title, articles: Object.values(sql_data[0].reccomendations[0].articles), supplements:  Object.values(sql_data[0].reccomendations[0].supplements), choices : data.choices};
-  }
-  else {
+    sql_data = [{
+      reccomendations: [{
+        "articles": ["art1 ", "art2", "art3"],
+        "supplements": ["supp1", "supp2", "supp3"]
+      }]
+    }];
+    data = {
+      title: title,
+      keys: Object.keys(sql_data[0].reccomendations[0]),
+      title: title,
+      articles: Object.values(sql_data[0].reccomendations[0].articles),
+      supplements: Object.values(sql_data[0].reccomendations[0].supplements),
+      choices: data.choices
+    };
+  } else {
     sql_data = [data];
     val = []
     for (i = 0; i < sql_data.length; i++) {
-      val.push({value : Object.values(sql_data[i])});
+      val.push({
+        value: Object.values(sql_data[i])
+      });
     }
 
-    data = {keys : Object.keys(sql_data[0]), title : title, values: val, choices : data.choices};
+    data = {
+      keys: Object.keys(sql_data[0]),
+      title: title,
+      values: val,
+      choices: data.choices
+    };
   }
 
   //Data Format
@@ -275,5 +542,4 @@ exports.upcomingConsultations = upcomingConsultations;
 exports.updateConsultation = updateConsultation;
 exports.deleteConsultation = deleteConsultation;
 exports.makeRecommendation = makeRecommendation;
-exports.viewReccomendations = viewReccomendations;
-exports.removeReccomendations = removeReccomendations;
+exports.viewRecommendations = viewRecommendations;

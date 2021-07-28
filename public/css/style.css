@@ -88,17 +88,18 @@ a {
   /* transform: scale(.8); */
 }
 
-#about{
+#about {
   text-decoration: underline;
   color: blue;
 }
 
-#about_page{
+#about_page {
   margin: 0% 30%;
   padding-top: 1%;
   padding-bottom: 1%;
   font-size: 1.25em;
 }
+
 #page_title {
   font-size: 5em;
 }
@@ -124,7 +125,7 @@ a {
 .form_action {
   width: 40%;
   text-align: center;
-  margin: 0%  30%;
+  margin: 0% 30%;
   padding-top: 1%;
   padding-bottom: 1%;
   font-size: 1.5em;

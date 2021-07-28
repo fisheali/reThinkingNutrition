@@ -1,25 +1,34 @@
 <a href="/">
-<span id="menu_span">
-<p id='menu_logo'><img src='../images/logo.webp'></p>
-</span>
+  <span id="menu_span">
+    <p id='menu_logo'><img src='../images/logo.webp'></p>
+  </span>
 </a>
 
-  <h1>{{title}}</h1>
-  <div class="response">
-  <form action = {{../action}}>
-  <input type="hidden" id="searchFname" name="searchFname" value="">
-  <input type="hidden" id="searchLname" name="searchLname" value="">
-  <input type="hidden" id="searchClient_id" name="searchClient_id" value="{{record.[0].[Client ID]}}">
-  <input type="hidden" id="updateConfirmed" name="updateConfirmed" value="true">
-  <label for="fname">Updated First Name: </label><input type="text" id="fname" name="fname" value="{{record.[0].[First Name]}}"><br>
-  <label for="lname">Updated Last Name: </label><input type="text" id="lname" name="lname" value="{{record.[0].[Last Name]}}"><br>
-  <label for="phone">Updated Phone Number: </label><input type="tel" id="phone" name="phone" value="{{record.[0].[Phone Number]}}"><br>
-  <label for="email">Updated Email: </label><input type="email" id="email" name="email" value="{{record.[0].[Email Address]}}"><br>
-  <label for="street">Updated Street Address: </label><input type="text" id="street" name="street" value="{{record.[0].[Street Address]}}"><br>
-  <label for="city">Updated City: </label><input type="text" id="city" name="city" value="{{record.[0].City}}"><br>
-  <input type="hidden" id="updateFname" name="updateFname" value="">
-  <input type="hidden" id="updateLname" name="updateLname" value="">
-  <input type="hidden" id="updateClient_id" name="updateClient_id" value={{record.[0].[Client ID]}}>
-  <input type="submit" value="Submit">
+<h1>{{title}}</h1>
+<div class="response">
+  <form action={{../action}}>
+    <input type="hidden" id="searchFname" name="searchFname" value="">
+    <input type="hidden" id="searchLname" name="searchLname" value="">
+    <input type="hidden" id="searchClient_id" name="searchClient_id" value="{{record.[0].[Client ID]}}">
+    <input type="hidden" id="updateConfirmed" name="updateConfirmed" value="true">
+    {{#if record.[0].[Email Address]}}
+      <label for="fname">Updated First Name: </label><input type="text" id="fname" name="fname" value="{{record.[0].[First Name]}}"><br>
+      <label for="lname">Updated Last Name: </label><input type="text" id="lname" name="lname" value="{{record.[0].[Last Name]}}"><br>
+      <label for="phone">Updated Phone Number: </label><input type="tel" id="phone" name="phone" value="{{record.[0].[Phone Number]}}"><br>
+      <label for="email">Updated Email: </label><input type="email" id="email" name="email" value="{{record.[0].[Email Address]}}"><br>
+      <label for="street">Updated Street Address: </label><input type="text" id="street" name="street" value="{{record.[0].[Street Address]}}"><br>
+      <label for="city">Updated City: </label><input type="text" id="city" name="city" value="{{record.[0].City}}"><br>{{/if}}
+    {{#if record.[0].[Consultation ID]}}<input type="hidden" id="consultation_id" name="consultation_id" value="{{record.[0].[Consultation ID]}}">
+      <input type="hidden" id="fname" name="fname" value="">
+      <input type="hidden" id="lname" name="lname" value="">
+      <label for="date">New Date: </label><input type="date" id="date" name="date" value="{{record.[0].Date}}"><br>
+      <label for="time">New Time: </label><input type="time" id="time" name="time" value="{{record.[0].Time}}"><br>
+      <label for="completed">Completed: </label><input type="checkbox" id="completed" name="completed" value="{{record.[0].Completed}}"><br>
+      <label for="paid">Paid: </label><input type="checkbox" id="paid" name="paid" value="{{record.[0].Paid}}"><br>
+      <label for="notes">Notes: <textarea id="notes" name="notes" rows="5" columns="100">{{record.[0].Notes}}</textarea><br>{{/if}}
+    <input type="hidden" id="updateFname" name="updateFname" value="">
+    <input type="hidden" id="updateLname" name="updateLname" value="">
+    <input type="hidden" id="client_id" name="client_id" value={{record.[0].[Client ID]}}>
+    <input type="submit" value="Submit">
   </form>
 </div>

@@ -1,7 +1,7 @@
 <a href="/">
-<span id="menu_span">
-<p id='menu_logo'><img src='../images/logo.webp'></p>
-</span>
+  <span id="menu_span">
+    <p id='menu_logo'><img src='../images/logo.webp'></p>
+  </span>
 </a>
 
 <h1>{{title}}</h1>
@@ -9,10 +9,12 @@
 <div class="response">
   <form action="/makeRecommendation">
     {{#each articles}}
-    <input type="checkbox" name="{{this}}" value="{{this}}"> <lable for="{{this}}"> {{this}} </lable> <br>
+      <input type="checkbox" name="{{this}}" value="{{this}}">
+      <lable for="{{this}}"> {{this}} </lable> <br>
     {{/each}}
     {{#each supplements}}
-    <input type="checkbox" name="{{this}}" value="{{this}}"> <lable for="{{this}}"> {{this}} </lable> <br>
+      <input type="checkbox" name="{{this}}" value="{{this}}">
+      <lable for="{{this}}"> {{this}} </lable> <br>
     {{/each}}
     <input type="hidden" name="choices" value="false">
     <input type="submit" value="Submit">

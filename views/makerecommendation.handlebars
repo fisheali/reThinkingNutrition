@@ -1,0 +1,61 @@
+<a href="/">
+  <span id="menu_span">
+    <p id='menu_logo'><img src='../images/logo.webp'></p>
+  </span>
+</a>
+
+<h1>{{title}}</h1>
+<div class="response">
+  {{#if con_choice}}
+    <form action="{{action}}">
+      <p>Make a recommendation for {{fname}} {{lname}} regarding <select class="cond_list" name="condition_id">{{#each con}}
+            <option value="{{this.condition_id}}">{{this.condition_name}}</option>
+          {{/each}}</select></p>
+      <br><label for="supp_rec">Show Me Supplements: </label><input type="checkbox" id="supp_rec" name="supp_rec" value="supp_rec"><br>
+      <br><label for="art_rec">Show Me Articles: </label><input type="checkbox" id="art_rec" name="art_rec" value="art_rec"><br>
+      <input type="hidden" id="client_id" name="client_id" value="{{client_id}}">
+      <input type="hidden" id="fname" name="fname" value="{{fname}}">
+      <input type="hidden" id="lname" name="lname" value="{{lname}}">
+      <input type="hidden" id="stage" name="stage" value="recs">
+      <input type="submit" value="View Recommendations">
+    </form>
+  {{/if}}
+
+  {{#if rec_choice}}
+    <form action="{{action}}">
+      {{#if art_rec}}
+        <table>
+          <tr>{{#each art_rec.[0]}}
+              <th>{{@key}}</th>
+            {{/each}}</tr>
+          {{#each art_rec}}
+            <tr>{{#each this}}
+                <td>{{this}}</td>
+              {{/each}}
+              <td><input type="checkbox" name="article[]" value="{{[Article ID]}}"></td>
+            </tr>
+          {{/each}}
+        </table>
+      {{/if}}
+      {{#if supp_rec}}
+        <table>
+          <tr>{{#each supp_rec.[0]}}
+              <th>{{@key}}</th>
+            {{/each}}</tr>
+          {{#each supp_rec}}
+            <tr>{{#each this}}
+                <td>{{this}}</td>
+              {{/each}}
+              <td><input type="checkbox" name="supplement[]" value="{{[Supplement ID]}}"></td>
+            </tr>
+          {{/each}}
+        </table>
+      {{/if}}
+      <input type="hidden" id="client_id" name="client_id" value="{{client_id}}">
+      <input type="hidden" id="fname" name="fname" value="">
+      <input type="hidden" id="lname" name="lname" value="">
+      <input type="hidden" id="stage" name="stage" value="update">
+      <input type="submit" value="{{button}}">
+    </form>
+  {{/if}}
+</div>
