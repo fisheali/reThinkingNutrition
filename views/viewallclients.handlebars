@@ -1,32 +1,32 @@
 <a href="/">
-  <span id="menu_span">
-    <p id='menu_logo'><img src='../images/logo.webp'></p>
-  </span>
+<span id="menu_span">
+<p id='menu_logo'><img src='../images/logo.webp'></p>
+</span>
 </a>
 
 <div class="response">
-  {{!-- Create a table --}}
-  <table id="view-all">
+{{!-- Create a table --}}
+<table id="view-all">
 
     {{!-- Header section --}}
     <thead>
 
-      {{!-- For just the first row, we print each key of the row object as a header cell so we
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
         know what each column means when the page renders --}}
-      <tr>
+        <tr>
         {{#each response.[0]}}
-          <th>
-            {{@key}}
-          </th>
+        <th>
+        {{@key}}
+        </th>
         {{/each}}
-      </tr>
+        </tr>
     </thead>
 
     {{!-- Body section --}}
     <tbody>
 
-      {{!-- For each row, print the id, fname, lname, phone, email, address, city in order --}}
-      {{#each response}}
+        {{!-- For each row, print the id, fname, lname, phone, email, address, city in order --}}
+        {{#each response}}
         <tr>
             <td>{{this.client_id}}</td>
             <td>{{fname}}</td>
@@ -35,16 +35,16 @@
             <td>{{this.email}}</td>
             <td>{{#if this.city }}
                 {{this.city}}
-                 {{else}}
+                 {{else}}                
                 {{/if}}</td>
             <td>{{#if this.address }}
                 {{this.address}}
-                 {{else}}
+                 {{else}}                
                 {{/if}}</td>
             <td><button><a href="/deleteClientFromTable/{{this.client_id}}">Delete</a></button></td>
             <td><a href="/updateClientFromTable/{{this.client_id}}">Update</a></td>
         </tr>
-      {{/each}}
+        {{/each}}
     </tbody>
-  </table>
+</table>
 </div>
