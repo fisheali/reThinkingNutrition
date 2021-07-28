@@ -502,28 +502,12 @@ app.get('/addCondition', function(req, res) {
   conditionMethods.addCondition(req.query);
 });
 
-app.get('/removeCondition', function(req, res) {
-  //if (check for multiple records and Confirmation )
-  //else
-  deleted = conditionMethods.removeCondition(req.query);
-  if (deleted[0]) {
-    res.render('read', deleted[2]);
-  } else {
-    res.render('failure', req.query);
-  }
-});
 
-app.get('/updateCondition', function(req, res) {
-  data = conditionMethods.updateCondition(req.query);
-  if (data[0]) {
-    if (data[1]) {
-      //Logice for multiple records
-    }
-    res.render('read', data[2]);
-  } else {
-    res.render('failure', req.query);
-  }
-});
+  app.get('/deleteConditionFromTable/:id', function(req, res) {
+    let id = parseInt(req.params.id);
+    conditionMethods.deleteConditionFromTable(id, pool, res);
+  });
+
 
 app.get('/getConditions', function(req, res) {
   conditionMethods.getConditions(req.query, pool, res);
