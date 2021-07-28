@@ -1,0 +1,21 @@
+<a href="/">
+<span id="menu_span">
+<p id='menu_logo'><img src='../images/logo.webp'></p>
+</span>
+</a>
+
+<div class = 'response'>
+<h1>Update {{this.fname}} {{this.lname}}:</h1>
+<form action="/updateClientFromTable" method="POST"> 
+    Client ID: <input type="number" name="client_id" value="{{this.client_id}}" readonly='readonly'><br>
+    First name: <input type="text" name="fname" value="{{this.fname}}"><br>
+    Last name: <input type="text" name="lname" value="{{this.lname}}"><br>
+    Phone: <input type="tel" name="phone" value="{{this.phone}}"><br>
+    Email: <input type="email" name="email" value="{{this.email}}"><br>
+    Address:<input type="text" name="address" value="{{this.address}}"><br>
+    City:<input type="text" name="city" value="{{this.city}}"><br>
+    <input type="submit">  
+</form>
+
+
+</div>
