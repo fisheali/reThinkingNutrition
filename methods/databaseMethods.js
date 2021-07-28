@@ -32,7 +32,8 @@ function multipleRecords(res, action, data) {
     time_frame: 0,
     radio_client: 0,
     cosnultation_id: 0,
-    no_sub : 0
+    no_sub: 0,
+    search: 0
   };
 
   if (data["consultations"]) {
@@ -78,6 +79,11 @@ function multipleRecords(res, action, data) {
   if (data["Consultation ID"]) {
     let conData = data["Consultation ID"];
     returnData.consultation_id = conData;
+  }
+
+  if (data["search"]) {
+    let sData = data["search"];
+    returnData.search = sData;
   }
 
   return returnData;
@@ -146,6 +152,11 @@ function multipleNameRecords(res, action, data) {
     returnData.consultation_id = conData;
   }
 
+  if (data["search"]) {
+    let sData = data["search"];
+    returnData.search = sData;
+  }
+
   return returnData;
 };
 
@@ -164,7 +175,7 @@ function singleRecord(res, title) {
   return returnData;
 };
 
-async function condList(pool, params) {
+async function dropDownList(pool, params) {
   //Function to return a condition list based on params
   //Build Query string
   sqlQuery = "";
@@ -192,9 +203,63 @@ async function condList(pool, params) {
     searchList.push(params.client_id)
   }
 
+  if (params.inner_supp_list) {
+    sqlQuery += "SELECT supplement_id, type, brand_name\
+    FROM Supplements\
+    LEFT JOIN Brands\
+    USING (brand_id)\
+    JOIN Supplements_Articles\
+    USING (supplement_id)\
+    WHERE article_id = ?;"
+
+    searchList.push(params.article_id)
+  }
+
+  if (params.outer_supp_list) {
+    sqlQuery += "SELECT DISTINCT s.supplement_id, s.type, b.brand_name\
+    FROM Supplements s\
+    LEFT JOIN Brands b\
+    USING (brand_id)\
+    LEFT JOIN (SELECT supplement_id, article_id\
+    FROM Supplements_Articles\
+    WHERE article_id = ?) sa\
+    ON (s.supplement_id = sa.supplement_id)\
+    WHERE sa.article_id IS NULL;"
+
+    searchList.push(params.article_id)
+  }
+
+  if (params.inner_cond_list) {
+    sqlQuery += "SELECT condition_id, condition_name\
+    FROM Conditions\
+    JOIN Conditions_Articles\
+    USING (condition_id)\
+    WHERE article_id = ?;"
+
+    searchList.push(params.article_id)
+  }
+
+  if (params.outer_cond_list) {
+    sqlQuery += "SELECT DISTINCT c.condition_id, c.condition_name\
+    FROM Conditions c\
+    LEFT JOIN (SELECT article_id, condition_id\
+    FROM Conditions_Articles\
+    WHERE article_id = ?) ca\
+    ON (c.condition_id = ca.condition_id)\
+    WHERE ca.article_id IS NULL;"
+
+    searchList.push(params.article_id)
+  }
+
   if (params.full_list) {
     sqlQuery += "SELECT *\
     FROM Conditions;"
+  }
+
+  if (params.spec_article) {
+    sqlQuery += "SELECT * FROM Articles WHERE article_id = ?;";
+
+    searchList.push(params.article_id);
   }
 
   return pool.query(
@@ -237,7 +302,7 @@ function formatDropDowns(renderData, conditions) {
   }
   for (let i = 0; i < conditions[1].length; i++) {
     let brandName = (conditions[1][i].brand_name != null) ? conditions[1][i].brand_name + ': ' : '';
-    part = '<option value="' + conditions[1][i].supplement_id + '">' +  brandName + conditions[1][i].type + '</option>';
+    part = '<option value="' + conditions[1][i].supplement_id + '">' + brandName + conditions[1][i].type + '</option>';
     supTagRequired += part;
     supTag += part;
   }
@@ -246,12 +311,12 @@ function formatDropDowns(renderData, conditions) {
   requiredTag += '</select>';
   tag += '</select>';
 
-//Replace in renderData
-for (let i = 0; i < renderData.actions.length; i++) {
-  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond" required></select>', requiredTag);
-  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond"></select>', tag);
-  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type" required>', supTagRequired);
-  renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type">', supTag);
+  //Replace in renderData
+  for (let i = 0; i < renderData.actions.length; i++) {
+    renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond" required></select>', requiredTag);
+    renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond"></select>', tag);
+    renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type" required>', supTagRequired);
+    renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type">', supTag);
   }
   return renderData;
 };
@@ -260,7 +325,7 @@ for (let i = 0; i < renderData.actions.length; i++) {
 exports.returnPool = returnPool;
 exports.multipleNameRecords = multipleNameRecords;
 exports.singleRecord = singleRecord;
-exports.condList = condList;
+exports.dropDownList = dropDownList;
 exports.nameRecords = nameRecords;
 exports.multipleRecords = multipleRecords;
 exports.addDropDowns = addDropDowns;

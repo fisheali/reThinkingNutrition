@@ -294,7 +294,7 @@ app.get('/articles', function(req, res) {
       <label for="author">Author: </label><input type="text" id="author" name="author" value="" placeholder="author"><br>\
       <label for="publication">Publication: </label><input type="text" id="publication" value="" name="publication" placeholder="publication"><br>\
       <label for="date">Publish Date: </label><input type="date" id="date" name="date" value="" placeholder="publish date"><br>\
-      <label for="website">Website link: </label><input type="url" id="website" name="website" value="" placeholder="website link"><br>\
+      <label for="website">Website link: </label><input type="text" id="website" name="website" value="" placeholder="website link"><br>\
       <input type="hidden" name="supp_id" value="">\
       <input type="submit" value="Add Article"> </form>'
         }]
@@ -319,31 +319,22 @@ app.get('/articles', function(req, res) {
       {
         action: [{
           question: 'Update an article in library',
-          input: '<form action="/updateArticle"><label for="old_title">Title of Article to Update: </label><input required type="text" id="old_title" name="old_title" placeholder="article title to update"><br><br>\
-        <label for="new_title">Updated Title: </label><input type="text" id="new_title" name="new_title" placeholder="updated title"><br>\
-        <label for="add_remove_art_supp">Add/Remove </label> <select name="add_remove_art_supp" id="add_remove_art_supp"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
-        relation to condition: <select class="cond_list" name="cond"></select><br>\
-        <label for="add_remove_art_cond">Add/Remove </label><select name="add_remove_art_cond" id="add_remove_art_cond"><option value="no_action">No Action</option><option value="add">Add</option><option value="remove">Remove</option></select>\
-        relation to supplement:<input type="text" id="update_art_supp" name="update_art_supp" placeholder="Supplement Type"> from <select class="brand_list" name="update_art_supp_brand"></select><br>\
-        <label for="new_author">Updated Author: </label><input type="text" id="new_author" name="new_author" placeholder="updated author"><br>\
-        <label for="new_publication">Updated Publication: </label><input type="text" id="new_publication" name="new_publication" placeholder="updated publication"><br>\
-        <label for="new_publish_date">Updated Publish Date: </label><input type="date" id="new_publish_date" name="new_publish_date" placeholder="updated publish date"><br>\
-        <label for="new_website_link">Updated Website link: </label><input type="url" id="new_website_link" name="new_website_link" placeholder="updated website link"><br>\
-        <input type="submit" value="Submit"> </form>'
+          input: '<form action="/updateArticle"><label for="search">Search for Article to Update: </label><input required type="text" id="search" name="search" placeholder="title or author" required><br><br>\
+        <input type="submit" value="Search"> </form>'
         }]
       },
 
       {
         action: [{
           question: 'Remove an article from library',
-          input: '<form action="/removeArticle"><label for="title_to_remove">Title of Article to Remove: </label><input required type="text" id="title_to_remove" name="title_to_remove" placeholder="article title to remove"><br>\
-        <input type="submit" value="Submit"> </form>'
+          input: '<form action="/removeArticle"><label for="search">Search for Article to Remove: </label><input required type="text" id="search" name="search" placeholder="title or author"><br>\
+        <input type="submit" value="Search"> </form>'
         }]
       }
     ]
   };
   pageData = databaseMethods.addDropDowns(pool);
-  pageData.then( conditions => {
+  pageData.then(conditions => {
     finalData = databaseMethods.formatDropDowns(renderData, conditions);
     res.render('form', finalData);
   })
@@ -414,35 +405,15 @@ app.get('/articlesByCondition', function(req, res) {
 });
 
 app.get('/articlesBySupplement', function(req, res) {
-  articles = articleMethods.articlesBySupplement(req.query);
-  if (articles[0]) {
-    res.render('read', articles[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  articleMethods.articlesBySupplement(req.query, pool, res);
 });
 
 app.get('/updateArticle', function(req, res) {
-  articles = articleMethods.updateArticle(req.query);
-  if (articles[0]) {
-    if (articles[1]) {
-      //Logice for multiple records
-    }
-    res.render('read', articles[2]);
-  } else {
-    res.render('failure', req.query);
-  }
+  articleMethods.updateArticle(req.query, pool, res);
 });
 
 app.get('/removeArticle', function(req, res) {
-  //if (check for multiple records and Confirmation )
-  //else
-  deleted = articleMethods.removeArticle(req.query);
-  if (deleted[0]) {
-    res.render('read', deleted[2]);
-  } else {
-    res.render('failure', req.query);
-  }
+  articleMethods.removeArticle(req.query, pool, res);
 });
 
 app.get('/addSupplement', function(req, res) {

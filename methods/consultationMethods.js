@@ -272,11 +272,11 @@ function makeRecommendation(data, pool, res) {
       pool.release;
       res.render('choices', returnData);
     } else if (data.stage == 'stageTwo') {
-      condList = databaseMethods.condList(pool, {
+      dropDownList = databaseMethods.dropDownList(pool, {
         client_id: data.client_id,
         full_list: true
       })
-      condList.then(response => {
+      dropDownList.then(response => {
         console.log(response);
         returnData = {
           client_id: data.client_id,
@@ -291,7 +291,7 @@ function makeRecommendation(data, pool, res) {
         console.log(data);
         res.render('makerecommendation', returnData)
       })
-      condList.catch(err => {
+      dropDownList.catch(err => {
         console.log("MakeRecommendation Failed with: " + err);
         res.render('failure');
       })

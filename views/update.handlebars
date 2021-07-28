@@ -26,6 +26,34 @@
       <label for="completed">Completed: </label><input type="checkbox" id="completed" name="completed" value="{{record.[0].Completed}}"><br>
       <label for="paid">Paid: </label><input type="checkbox" id="paid" name="paid" value="{{record.[0].Paid}}"><br>
       <label for="notes">Notes: <textarea id="notes" name="notes" rows="5" columns="100">{{record.[0].Notes}}</textarea><br>{{/if}}
+    {{#if article}}
+      <input type="hidden" id="article_id" name="article_id" value="{{article.[0].article_id}}">
+      <label for="new_title">Updated Title: </label><input type="text" id="title" name="title" value="{{article.[0].title}}"><br>
+      <label for="add_supp">Add Supplement Relation:</label> <select class="supp_list" name="add_supp">
+        <option value=""></option>{{#each outer_supp}}
+          <option value="{{this.supplement_id}}">"{{#if this.brand_name}}{{brand_name}} :{{/if}}{{this.type}}"</option>
+        {{/each}}
+      </select><br>
+      <label for="remove_supp">Remove Supplement Relation:</label> <select class="supp_list" name="remove_supp">
+        <option value=""></option>{{#each inner_supp}}
+          <option value="{{this.supplement_id}}">"{{#if this.brand_name}}{{brand_name}} :{{/if}}{{this.type}}"</option>
+        {{/each}}
+      </select><br>
+      <label for="add_cond">Add Condition Relation: </label> <select class="cond_list" name="add_cond">
+        <option value=""></option>{{#each outer_cond}}
+          <option value="{{this.condition_id}}">{{this.condition_name}}</option>
+        {{/each}}
+      </select><br>
+      <label for="remove_cond">Remove Condition Relation: </label> <select class="cond_list" name="remove_cond">
+        <option value=""></option>{{#each inner_cond}}
+          <option value="{{this.condition_id}}">{{this.condition_name}}</option>
+        {{/each}}
+      </select><br>
+      <label for="author">Updated Author: </label><input type="text" id="author" name="author" value="{{article.[0].author}}"><br>
+      <label for="publication">Updated Publication: </label><input type="text" id="publication" name="publication" value="{{article.[0].publication}}"><br>
+      <label for="date">Updated Publish Date: </label><input type="date" id="date" name="date" value="{{article.[0].publish_date}}"><br>
+      <label for="website">Updated Website link: </label><input type="text" id="website" name="website" value="{{article.[0].website}}"><br>
+    {{/if}}
     <input type="hidden" id="updateFname" name="updateFname" value="">
     <input type="hidden" id="updateLname" name="updateLname" value="">
     <input type="hidden" id="client_id" name="client_id" value={{record.[0].[Client ID]}}>
