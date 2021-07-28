@@ -358,7 +358,30 @@ app.get('/updateClientRecords', function(req, res) {
 
 app.get('/addRemoveClientCond', function(req, res) {
   clientMethods.addRemoveClientCond(req.query, pool, res);
+  
 });
+
+  app.get('/viewAllClients', function(req, res) {
+    clientMethods.viewAllClients(req.query, pool, res);
+  });
+
+  app.get('/updateClientFromTable/:id', function(req, res) {
+    let id = parseInt(req.params.id);
+    clientMethods.updateClientFromTable(id, pool, res);
+  });
+
+  app.post('/updateClientFromTable', function(req, res) {
+    console.log(req.body);
+    let data = req.body;
+    clientMethods.updateClientFromTableDatabase(data, pool, res);
+    
+  });
+
+  app.get('/deleteClientFromTable/:id', function(req, res) {
+    let id = parseInt(req.params.id);
+    clientMethods.deleteClientFromTable(id, pool, res);
+  });
+
 
 app.get('/unpaidInvoices', function(req, res) {
   clientMethods.unpaidInvoices(pool, res);
