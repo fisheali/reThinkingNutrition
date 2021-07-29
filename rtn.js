@@ -8,6 +8,7 @@ var handlebars = require('express-handlebars').create({
   defaultLayout: 'main'
 });
 
+
 //requires
 var clientMethods = require('./methods/clientMethods.js');
 var consultationMethods = require('./methods/consultationMethods.js');
@@ -18,6 +19,7 @@ var databaseMethods = require('./methods/databaseMethods.js');
 
 //Create static file references
 app.use(express.static('public'));
+app.use(express.json());
 
 //Set up view engine
 app.engine('handlebars', handlebars.engine);
@@ -230,12 +232,11 @@ app.get('/consultations', function(req, res) {
 
 app.get('/supplements', function(req, res) {
   renderData = {
-    title: 'Supplements',
     actions: [{
         action: [{
           question: 'Add a new supplement',
-          input: '<form action="/addSupplement"><label for="type_supp">Supplement Type: </label><input required type="text" id="type_supp" name="type_supp" placeholder="Supplement Type"><br>\
-                      <label for="brand_list">from the brand </label><select class="brand_list" name="add_supp_brand"></select><br>\
+          input: '<form action="/addSupplement"><label for="type">Supplement Type: </label><input required type="text" id="type" name="type" placeholder="Supplement Type"><br>\
+                      <label for="brand">from the brand </label><select class="brand" name="brand"></select><br>\
                       <label for="cond">for treatment of </label><select class="cond_list" name="cond"></select><br>\
                       <input type="submit" value="Submit"></form>'
         }]
@@ -244,12 +245,8 @@ app.get('/supplements', function(req, res) {
       {
         action: [{
           question: 'Update a supplement',
-          input: '<form action="/updateSupplement">Update Supplement <label for="update_type_supp"> Type: </label><input required type="text" id="old_update_type_supp" name="type_supp" placeholder="Supplement To Update"><br><br>\
-                      <label for="update_type_supp">New Type: </label><input type="text" id="update_type_supp" name="update_type_supp" placeholder="New Supplement Type"><br>\
-                      <label for="update_brand_list">New Brand: </label><select class="brand_list" name="update_supp_brand"></select><br>\
-                      <label for="cond">Add new condition for treatment </label><select class="cond_list" name="cond"></select><br>\
-                      <label for="cond">Remove condition for treatment </label><select class="remove_cond_list" name="remove_treat_cond"></select><br>\
-                      <input type="submit" value="Submit"></form>'
+          input: '<form action="/updateSupplement"><label for="supp">Update Supplement: </label><input type="text" id="supp" name="supp" value="" placeholder="Supplement Type" required><br>\
+                      <input type="submit" value="Update"></form>'
         }]
       },
 
@@ -265,7 +262,7 @@ app.get('/supplements', function(req, res) {
       {
         action: [{
           question: 'Search supplements by brand',
-          input: '<form action="/supplementsByBrand">Search supplements that are made by <select required class="brand_list" name="update_supp_brand"></select>\
+          input: '<form action="/supplementsByBrand">Search supplements that are made by <select class="brand" name="brand" required></select>\
                       <input type="submit" value="Submit"></form>'
         }]
       },
@@ -273,8 +270,8 @@ app.get('/supplements', function(req, res) {
       {
         action: [{
           question: 'Manage brands (add or remove a brand)',
-          input: '<form action="/addBrand"><label for="add_brand">Add the brand </label><input type="text" id="add_brand" name="add_brand" placeholder="Add Brand"><br><input type="submit" value="Submit"></form><br<br>\
-                        <form action="/removeBrand"><label for="remove_brand">Remove the brand </label><select class="brand_list" name="remove_brand"></select><br><input type="submit" value="Submit"></form>'
+          input: '<form action="/addBrand"><label for="add_brand">Add the brand </label><input type="text" id="add_brand" name="add_brand" placeholder="Add Brand"><br><input type="submit" value="Add"></form><br<br>\
+                        <form action="/removeBrand"><label for="remove_brand">Remove the brand </label><select class="brand" name="brand" required></select><br><input type="submit" value="Remove"></form>'
         }]
       }
 
@@ -379,9 +376,8 @@ app.get('/addRemoveClientCond', function(req, res) {
     clientMethods.updateClientFromTable(id, pool, res);
   });
 
-  app.post('/updateClientFromTable', function(req, res) {
-    console.log(req.body);
-    let data = req.body;
+  app.get('/updateClientFromTable', function(req, res) {
+    let data = req.query;
     clientMethods.updateClientFromTableDatabase(data, pool, res);
 
   });
@@ -449,62 +445,27 @@ app.get('/removeArticle', function(req, res) {
 });
 
 app.get('/addSupplement', function(req, res) {
-  data = supplementMethods.addSupplement(req.query);
-  if (data[0]) {
-    res.render('read', data[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  supplementMethods.addSupplement(req.query, pool, res);
 });
 
 app.get('/updateSupplement', function(req, res) {
-  data = supplementMethods.updateSupplement(req.query);
-  if (data[0]) {
-    if (data[1]) {
-      //Logice for multiple records
-    }
-    res.render('read', data[2]);
-  } else {
-    res.render('failure', req.query);
-  }
+  supplementMethods.updateSupplement(req.query, pool, res);
 });
 
 app.get('/addBrand', function(req, res) {
-  data = supplementMethods.addBrand(req.query);
-  if (data[0]) {
-    res.render('read', data[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  supplementMethods.addBrand(req.query, pool, res);
 });
 
 app.get('/removeBrand', function(req, res) {
-  //if (check for multiple records and Confirmation )
-  //else
-  deleted = supplementMethods.removeBrand(req.query);
-  if (deleted[0]) {
-    res.render('read', deleted[2]);
-  } else {
-    res.render('failure', req.query);
-  }
+  supplementMethods.removeBrand(req.query, pool, res);
 });
 
 app.get('/supplementsByCondition', function(req, res) {
-  data = supplementMethods.supplementsByCondition(req.query);
-  if (data[0]) {
-    res.render('read', data[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  supplementMethods.supplementsByCondition(req.query, pool, res);
 });
 
 app.get('/supplementsByBrand', function(req, res) {
-  data = supplementMethods.supplementsByBrand(req.query);
-  if (data[0]) {
-    res.render('read', data[1]);
-  } else {
-    res.render('failure', req.query);
-  }
+  supplementMethods.supplementsByBrand(req.query, pool, res);
 });
 
 app.get('/addCondition', function(req, res) {

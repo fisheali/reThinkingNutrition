@@ -451,7 +451,6 @@ function updateClientFromTable(id, pool, res) {
     .then(response => {
 
       let client = response[0];
-      console.log(client);
       res.render('updateClientFromTable', client);
     })
     .catch(err => { //Error Catching

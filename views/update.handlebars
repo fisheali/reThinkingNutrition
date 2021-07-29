@@ -10,6 +10,7 @@
     <input type="hidden" id="searchFname" name="searchFname" value="">
     <input type="hidden" id="searchLname" name="searchLname" value="">
     <input type="hidden" id="searchClient_id" name="searchClient_id" value="{{record.[0].[Client ID]}}">
+    <input type="hidden" id="supplement_id" name="supplement_id" value="{{supplement.[0].supplement_id}}">
     <input type="hidden" id="updateConfirmed" name="updateConfirmed" value="true">
     {{#if record.[0].[Email Address]}}
       <label for="fname">Updated First Name: </label><input type="text" id="fname" name="fname" value="{{record.[0].[First Name]}}"><br>
@@ -54,6 +55,14 @@
       <label for="date">Updated Publish Date: </label><input type="date" id="date" name="date" value="{{article.[0].publish_date}}"><br>
       <label for="website">Updated Website link: </label><input type="text" id="website" name="website" value="{{article.[0].website}}"><br>
     {{/if}}
+
+    {{#if supplement}}
+      <label for="type">New Type: </label><input type="text" id="type" name="type" value="{{supplement.[0].type}}"><br>
+      <label for="brand">Change Brand: </label><select class="brand" name="brand"><option value="NULL">None</option>{{#each brand_list}}<option value="{{this.brand_id}}">{{this.brand_name}}</option>{{/each}}</select><br>
+      <label for="add_cond">Add new condition relationship: </label><select class="cond_list" name="add_cond"><option value=""></option>{{#each outer_supp_cond_list}}<option value="{{this.condition_id}}">{{this.condition_name}}</option>{{/each}}</select><br>
+      <label for="remove_cond">Remove condition relationship: </label><select class="cond_list" name="remove_cond"><option value=""></option>{{#each inner_supp_cond_list}}<option value="{{this.condition_id}}">{{this.condition_name}}</option>{{/each}}</select><br>
+    {{/if}}
+
     <input type="hidden" id="updateFname" name="updateFname" value="">
     <input type="hidden" id="updateLname" name="updateLname" value="">
     <input type="hidden" id="client_id" name="client_id" value={{record.[0].[Client ID]}}>

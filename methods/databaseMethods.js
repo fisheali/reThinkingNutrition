@@ -250,6 +250,34 @@ async function dropDownList(pool, params) {
     searchList.push(params.article_id)
   }
 
+  if (params.outer_supp_cond_list) {
+    sqlQuery += "SELECT DISTINCT c.condition_id, c.condition_name\
+     FROM Conditions c\
+     LEFT JOIN \
+     (SELECT supplement_id, condition_id\
+      FROM Conditions_Supplements\
+      WHERE supplement_id = ?) cs \
+      ON (c.condition_id = cs.condition_id)\
+      WHERE cs.supplement_id IS NULL;"
+
+    searchList.push(params.supp_id);
+  }
+
+  if (params.inner_supp_cond_list) {
+    sqlQuery += "SELECT condition_id, condition_name\
+    FROM Conditions\
+    JOIN Conditions_Supplements\
+    USING (condition_id)\
+    WHERE supplement_id = ?;";
+
+    searchList.push(params.supp_id)
+  }
+
+  if (params.brand_list) {
+    sqlQuery += "SELECT *\
+    FROM Brands;"
+  }
+
   if (params.full_list) {
     sqlQuery += "SELECT *\
     FROM Conditions;"
@@ -259,6 +287,12 @@ async function dropDownList(pool, params) {
     sqlQuery += "SELECT * FROM Articles WHERE article_id = ?;";
 
     searchList.push(params.article_id);
+  }
+
+  if (params.spec_supp) {
+    sqlQuery += "SELECT * FROM Supplements WHERE supplement_id = ?;";
+
+    searchList.push(params.supp_id);
   }
 
   return pool.query(
@@ -284,12 +318,13 @@ async function nameRecords(pool, data) {
 
 async function addDropDowns(pool) {
   //Get Condition records
-  return pool.query("SELECT * FROM Conditions;SELECT supplement_id, type, brand_name FROM Supplements LEFT JOIN Brands USING (brand_id);");
+  return pool.query("SELECT * FROM Conditions;SELECT supplement_id, type, brand_name FROM Supplements LEFT JOIN Brands USING (brand_id);SELECT * FROM Brands;");
 }
 
 function formatDropDowns(renderData, conditions) {
   //Build Conditions Tag
-
+  brandTagRequired = '<select class="brand" name="brand" required>';
+  brandTag = '<select class="brand" name="brand"><option value="">';
   supTagRequired = '<select id="supp" name="supp" required><option value="">';
   supTag = '<select id="supp" name="supp"><option value=""></option>';
   requiredTag = '<select id="cond" name="cond" required>';
@@ -305,6 +340,13 @@ function formatDropDowns(renderData, conditions) {
     supTagRequired += part;
     supTag += part;
   }
+  for (let i = 0; i < conditions[2].length; i++) {
+    part = '<option value="' + conditions[2][i].brand_id + '">' + conditions[2][i].brand_name + '</option>';
+    brandTagRequired += part;
+    brandTag += part;
+  }
+  brandTagRequired += '</select>';
+  brandTag += '</select>';
   supTagRequired += '</select>';
   supTag += '</select>';
   requiredTag += '</select>';
@@ -312,11 +354,14 @@ function formatDropDowns(renderData, conditions) {
 
   //Replace in renderData
   for (let i = 0; i < renderData.actions.length; i++) {
+    renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="brand" name="brand" required></select>', brandTagRequired);
+    renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="brand" name="brand"></select>', brandTag);
     renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond" required></select>', requiredTag);
     renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<select class="cond_list" name="cond"></select>', tag);
     renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type" required>', supTagRequired);
     renderData.actions[i].action[0].input = renderData.actions[i].action[0].input.replace('<input type="text" id="supp" name="supp" value="" placeholder="Supplement Type">', supTag);
   }
+
   return renderData;
 };
 

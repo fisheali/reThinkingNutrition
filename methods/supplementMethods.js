@@ -1,193 +1,183 @@
-function addSupplement(data) {
+var databaseMethods = require('../methods/databaseMethods.js');
+
+function addSupplement(data, pool, res) {
   //log data for debug
+  sqlQuery = 'INSERT INTO Supplements (type, brand_id)\
+  VALUES (?, ?)';
 
+  pool.query(
+      sqlQuery,
+      [data.type, data.brand]
+    )
+    .then(response => {
+      console.log(response);
+      res.render('success');
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('failure');
+    })
 };
 
-function updateSupplement(data) {
-  //log data fro debug
-  console.log(data);
-  title = "Update Supplement";
+function updateSupplement(data, pool, res) {
 
-  //Database call logic
+  action = '/updateSupplement';
+  title = 'Update Supplement';
 
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data = [{
-    "Supplement Name": "Magnesium",
-    "Brand": "Sane Max"
-  }];
-
-  //Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({
-      value: Object.values(sql_data[i])
-    });
-  }
-
-  data = {
-    keys: Object.keys(sql_data[0]),
-    title: title,
-    values: val
-  };
+  if (data.updateConfirmed) {
+    sqlQuery = "INSERT INTO Supplements (type, brand_id) VALUES (?, ?);"
+    params = [data.type, data.brand];
 
 
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
-};
+    if (data.add_cond) {
+      sqlQuery += "INSERT INTO Conditions_Supplements (supplement_id, condition_id)\
+    VALUES (?, ?);"
 
-function addBrand(data) {
-  //log data for debug
-  console.log(data);
-  title = "Add Brand";
-
-  //Database call logic
-
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data = [{
-    "Brand Name": "Calvin's NOT so Curious Concoctions"
-  }]
-  //Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({
-      value: Object.values(sql_data[i])
-    });
-  }
-
-  data = {
-    keys: Object.keys(sql_data[0]),
-    title: title,
-    values: val
-  };
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, data]
-  //Database Call logic
-
-  //Return failure or success
-  return true;
-};
-
-function removeBrand(data) {
-  //log data fro debug
-  console.log(data);
-  title = "Remove Brand";
-
-  //Database call logic
-
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data = [{
-    "Brand": "Calvin's Curious Concoctions"
-  }];
-
-  //Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({
-      value: Object.values(sql_data[i])
-    });
-  }
-
-  data = {
-    keys: Object.keys(sql_data[0]),
-    title: title,
-    values: val
-  };
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, true, data]
-};
-
-function supplementsByCondition(data) {
-  //log data for debug
-  console.log(data);
-  title = "Supplements for ".concat(data.treat_cond);
-
-  //Database call logic
-
-  //Logic to check if there are multiple records returned
-
-  //placeholder data
-  sql_data = [{
-      "Supplement Type": "Magnesium",
-      "Brand": "Mad Max"
-    },
-    {
-      "Supplement Type": "Milkthistle",
-      "Brand": "Calvin's NOT so Curious Concoctions"
-    },
-    {
-      "Supplement Type": "Cat Toe Bean",
-      "Brand": "Calvin's Curious Concoctions"
+      params.push(data.supplement_id);
+      params.push(data.add_cond);
     }
-  ]
-  //Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({
-      value: Object.values(sql_data[i])
-    });
+
+    if (data.remove_cond) {
+      sqlQuery += "DELETE FROM Conditions_Supplements WHERE supplement_id = ? AND condition_id = ?;";
+
+      params.push(data.supplement_id);
+      params.push(data.remove_cond);
+    }
+
+    pool.query(
+        sqlQuery,
+        params
+      )
+      .then(response => {
+        res.render('success');
+      })
+      .catch(err => {
+        console.log(err);
+        res.render('failure');
+      })
   }
-
-  data = {
-    keys: Object.keys(sql_data[0]),
-    title: title,
-    values: val
-  };
-
-
-  //Return [bool for success, bool for multiple records, data]
-  return [true, data]
+else{
+  console.log(data.supp);
+  dropDowns = databaseMethods.dropDownList(pool, {
+    supp_list: true,
+    outer_supp_cond_list: true,
+    inner_supp_cond_list: true,
+    brand_list: true,
+    spec_supp: true,
+    supp_id: data.supp
+  });
+  dropDowns.then(response => {
+      var returnData = {
+        record: 0,
+        title: title,
+        action: action,
+        outer_supp_cond_list: response[0],
+        inner_supp_cond_list: response[1],
+        brand_list: response[2],
+        supplement: response[3],
+      };
+      let dat = response;
+      //NOTE ABSENSE OF BRACKETS
+      returnData.record = dat;
+      res.render('update', returnData);
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('failure');
+    })
+  }
 };
 
-function supplementsByBrand(data) {
+function addBrand(data, pool, res) {
   //log data for debug
-  console.log(data);
-  title = "Supplements from ".concat(data.update_supp_brand);
+  sqlQuery = "INSERT INTO Brands (brand_name) VALUES (?);";
 
-  //Database call logic
+  pool.query(
+      sqlQuery,
+      [data.add_brand]
+    )
+    .then(response => {
+      console.log(response);
+      res.render('success');
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('failure');
+    })
+};
 
-  //Logic to check if there are multiple records returned
+function removeBrand(data, pool, res) {
+  //log data fro debug
+  sqlQuery = "DELETE FROM Brands WHERE brand_id = ?";
 
-  //placeholder data
-  sql_data = [{
-      "Supplement Type": "Magnesium",
-      "Brand": "Mad Max"
-    },
-    {
-      "Supplement Type": "Milkthistle",
-      "Brand": "Mad Max"
-    },
-    {
-      "Supplement Type": "Mummer's Miracle",
-      "Brand": "Mad Max"
-    }
-  ]
-  //Potential Data Format Method
-  val = []
-  for (i = 0; i < sql_data.length; i++) {
-    val.push({
-      value: Object.values(sql_data[i])
-    });
-  }
+  pool.query(
+      sqlQuery,
+      [data.brand]
+    )
+    .then(response => {
+      console.log(response);
+      res.render('success');
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('failure');
+    })
+};
 
-  data = {
-    keys: Object.keys(sql_data[0]),
-    title: title,
-    values: val
-  };
+function supplementsByCondition(data, pool, res) {
+  //log data for debug
+  action = '/supplementsByCondition';
 
+  sqlQuery = "SELECT supplement_id AS 'Supplement ID', type AS 'Type', brand_name AS 'Brand'\
+  FROM Supplements\
+  LEFT JOIN Brands\
+  USING (brand_id) \
+  JOIN Conditions_Supplements\
+  USING (supplement_id) \
+  WHERE condition_id = ?;"
 
-  //Return [bool for success, bool for multiple records, data]
-  return [true, data]
+  pool.query(
+      sqlQuery,
+      [data.cond]
+    )
+    .then(response => {
+      if (response.length > 0) {
+        response.no_sub = true;
+        returnData = databaseMethods.multipleRecords(response, action, data);
+        pool.release;
+        res.render('choices', returnData);
+      } else {
+        res.render('failure');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('failure');
+    })
+};
+
+function supplementsByBrand(data, pool, res) {
+  action = '/supplementsByBrand';
+
+  sqlQuery = "SELECT supplement_id AS 'Supplement ID', type AS 'Type', brand_name AS 'Brand'\
+  FROM Supplements\
+  JOIN Brands USING (brand_id)\
+  WHERE brand_id = ?;"
+
+  pool.query(
+      sqlQuery,
+      [Number(data.brand)]
+    )
+    .then(response => {
+      response.no_sub = true;
+      returnData = databaseMethods.multipleRecords(response, action, data);
+      pool.release;
+      res.render('choices', returnData);
+    })
+    .catch(err => {
+      console.log(err);
+      res.render('failure');
+    })
 };
 
 exports.addSupplement = addSupplement;
