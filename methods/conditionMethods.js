@@ -65,6 +65,46 @@ function getConditions(data, pool, res) {
 
 };
 
+
+function updateConditionFromTable(id, pool, res) {
+  title = "Update Condition From Table";
+  action = "/updateConditionFromTable";
+  console.log('inside updateConditionFromTable and printing id', id);
+  let sqlQuery = "SELECT * FROM Conditions WHERE condition_id = ?";
+
+  pool.query(sqlQuery, id)
+    .then(response => {
+
+      let condition = response[0];
+      res.render('updateConditionFromTable', condition);
+    })
+    .catch(err => { //Error Catching
+      console.log("FAILED: Update Client From Table failed with error: " + err);
+      res.render('failure');
+    })
+}
+
+
+function updateConditionFromTableDatabase(data, pool, res) {
+  title = "Update Condition From Table - Database";
+  action = "/updateConditionFromTableDatabase";
+  console.log('inside updateconditionfromdatabase');
+  console.log('data ', data);
+  let query = `UPDATE Conditions SET condition_name = "${data.condition_name}"\
+     WHERE condition_id= ${parseInt(data.condition_id)};`;
+   pool.query(query)
+    .then(response => {
+      res.render('success');
+    })
+    .catch(err => { //Error Catching
+      console.log("FAILED: Update Condition From Table Database failed with error: " + err);
+      res.render('failure');
+    })
+}
+
+exports.updateConditionFromTable = updateConditionFromTable;
+exports.updateConditionFromTableDatabase = updateConditionFromTableDatabase;
+
 exports.addCondition = addCondition;
 exports.deleteConditionFromTable = deleteConditionFromTable;
 exports.getConditions = getConditions;
