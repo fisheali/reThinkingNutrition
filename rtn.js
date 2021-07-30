@@ -487,6 +487,17 @@ app.get('/condList', function(req, res) {
   res.send(conditionMethods.condList(req.query, pool, res));
 });
 
+app.get('/updateConditionFromTable/:id', function(req, res) {
+  let id = parseInt(req.params.id);
+  conditionMethods.updateConditionFromTable(id, pool, res);
+});
+
+app.get('/updateConditionFromTable', function(req, res) {
+  let data = req.query;
+  conditionMethods.updateConditionFromTableDatabase(data, pool, res);
+
+});
+
 app.listen(app.get('port'), function() {
   console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
 });
