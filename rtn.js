@@ -26,7 +26,7 @@ app.use(express.json());
 //Set up view engine
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 8526);
+app.set('port', 8531);
 
 //Create Database pool
 const pool = databaseMethods.returnPool();
